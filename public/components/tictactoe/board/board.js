@@ -1,12 +1,12 @@
 'use client'
 
 import { useState } from 'react';
-import SymbolX from '../symbols/symbolX';
-import SymbolY from '../symbols/symbolY';
-import Board from './board.css'
+import { SymbolX, SymbolY } from '../symbols';
+import './board.css'
 
-export default function board({ sBoard="", sBorders="" }){
+export default function board({ sBoard="", sBorders="", firstToPlay="X" }){
     const [symbols, setSymbols] = useState(Array(9).fill(null));
+    const nextSymbol = useState(firstToPlay)
 
     const handleClick = (index) => {
         console.log(`the user selected the element: ${index}`)
