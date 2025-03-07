@@ -1,10 +1,21 @@
 import './symbols.css'
 
-export const SymbolX = () => {
-    return (<div className='bg-red-100'></div>)
+//in style you can pass a class to modify color or other styles
+
+export const SymbolX = (style = '') => {
+    return (
+        <div className='symbolX'>
+            <div className={`main-diagonal ${style}`}></div>
+            <div className={`secondary-diagonal ${style}`}></div>
+        </div>
+    )
 }
 
-export const symbolY = () => {
-    return (<div className='bg-red-100'></div>)
+export const SymbolO = (style = '') => {
+    return (
+        <div className='symbolO'>
+            <div className={`main ${style}`}></div>
+        </div>
+    )
 }
 

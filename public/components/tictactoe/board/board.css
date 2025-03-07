@@ -7,6 +7,7 @@
 .board-cell{
     height: 100%;
     width: 30%;
+    cursor: pointer;
 }
 
 .board-row{
@@ -17,7 +18,7 @@
 }
 
 .border-coll{
-    /* background-color: aqua; */
+    background-color: rgb(29, 29, 29);
     width: 5%;
     height: 100%;
     overflow: hidden;
@@ -36,7 +37,7 @@
 }
 
 .border-row{
-    /* background-color: aqua; */
+    background-color: rgb(29, 29, 29);
     height: 5%;
     width: 100%;
     overflow: hidden;

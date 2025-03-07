@@ -10,7 +10,11 @@ const Page = () => {
           {/* <Game/> */}
           <section>
               <div style = {{ width: '500px', height: '500px'}}>
-                  <Board sBorders="bg-green-500" firstToPlay="Y" />
+                  <Board 
+                //   sBorders="bg-green-500!" firstToPlay="Y" 
+                />
+
+                
               </div>
           </section>
       </div>

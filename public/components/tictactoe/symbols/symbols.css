@@ -1,4 +1,33 @@
-.bar{
-    height: 20%;    
+.symbolX, .symbolO{
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
 }
 
+.symbolX .main-diagonal, .secondary-diagonal{
+    height: 80%;
+    width: 20%;
+    background-color: rgb(161, 19, 0);
+    position: absolute;
+    border-radius: 20px;
+}
+
+.symbolX .main-diagonal{
+    rotate: -45deg;
+}
+
+.symbolX .secondary-diagonal{
+    rotate: 45deg;
+}
+
+.symbolO .main{
+    height: 80%;
+    width: 80%;
+    border-radius: 100%;
+    border: 1.5rem solid rgb(0, 177, 15);
+    background-color: transparent;
+}
