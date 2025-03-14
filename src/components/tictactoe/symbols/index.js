@@ -1,19 +1,18 @@
 import './symbols.css'
+import React from 'react'
 
-//in style you can pass a class to modify color or other styles
-
-export const SymbolX = (style = '') => {
+export const Symbol0 = (style = '') => {
     return (
-        <div className='symbolX'>
+        <div className='symbol0'>
             <div className={`main-diagonal ${style}`}></div>
             <div className={`secondary-diagonal ${style}`}></div>
         </div>
     )
 }
 
-export const SymbolO = (style = '') => {
+export const Symbol1 = (style = '') => {
     return (
-        <div className='symbolO'>
+        <div className='symbol1'>
             <div className={`main ${style}`}></div>
         </div>
     )

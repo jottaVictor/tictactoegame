@@ -1,4 +1,4 @@
-.symbolX, .symbolO{
+.symbol0, .symbol1{
     height: 100%;
     width: 100%;
     overflow: hidden;
@@ -8,7 +8,7 @@
     position: relative;
 }
 
-.symbolX .main-diagonal, .secondary-diagonal{
+.symbol0 .main-diagonal, .secondary-diagonal{
     height: 80%;
     width: 20%;
     background-color: rgb(161, 19, 0);
@@ -16,18 +16,18 @@
     border-radius: 20px;
 }
 
-.symbolX .main-diagonal{
+.symbol0 .main-diagonal{
     rotate: -45deg;
 }
 
-.symbolX .secondary-diagonal{
+.symbol0 .secondary-diagonal{
     rotate: 45deg;
 }
 
-.symbolO .main{
+.symbol1 .main{
     height: 80%;
     width: 80%;
     border-radius: 100%;
-    border: 1.5rem solid rgb(0, 177, 15);
+    border: 1.5em solid rgb(0, 177, 15);
     background-color: transparent;
 }
