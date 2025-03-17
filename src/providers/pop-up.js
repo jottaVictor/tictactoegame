@@ -8,30 +8,32 @@ const GenericPopUpContext = createContext({
     expandGenericPopUp: () => {},
     minimizeGenericPopUp: () => {},
     closeGenericPopUp: () => {},
-    genericPopUpAnimation: ''
+    isActive: false,
+    isExpanded: false
 });
 
 export const GenericPopUpProvider = ({ children }) => {
-    const { showBlush, hideBlush } = useBlush()
-    const [genericPopUpAnimation, setGenericPopUpAnimation] = useState('');
+    const {showBlush, hideBlush} = useBlush()
+    const [isActive, setIsActive] = useState(true)
+    const [isExpanded, setIsExpanded] = useState(false)
 
     const showGenericPopUp = () => {
-        setGenericPopUpAnimation('generic-fade-in')
+        setIsActive(true)
         console.log("The generic popUp was showed")
     }
 
     const hideGenericPopUp = () => {
-        setGenericPopUpAnimation('generic-fade-out')
+        setIsActive(false)
         console.log("The generic popUp was hidden")
     }
 
     const expandGenericPopUp = () => {
-        setGenericPopUpAnimation('pop-up-transaction-expand')
+        setIsExpanded(true)
         showBlush()
     }
 
     const minimizeGenericPopUp = () => {
-        setGenericPopUpAnimation('pop-up-transaction-minimize')
+        setIsExpanded(false)
         hideBlush()
     }
 
@@ -41,7 +43,7 @@ export const GenericPopUpProvider = ({ children }) => {
     }
 
     return (
-        <GenericPopUpContext.Provider value={{ showGenericPopUp, hideGenericPopUp, expandGenericPopUp, minimizeGenericPopUp, closeGenericPopUp, genericPopUpAnimation }}>
+        <GenericPopUpContext.Provider value={{ showGenericPopUp, hideGenericPopUp, expandGenericPopUp, minimizeGenericPopUp, closeGenericPopUp, isExpanded, isActive }}>
             {children}
         </GenericPopUpContext.Provider>
     );

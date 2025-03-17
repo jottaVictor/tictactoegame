@@ -13,7 +13,18 @@
     opacity: 0;
     pointer-events: none;
     box-shadow: 0 0 1.5em rgba(0, 0, 0, .1), 0 0 .5em rgba(0, 0, 0, .15);
-    overflow: visible;
+    transition: all 1s ease;
+}
+
+.generic-pop-up.active{
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.generic-pop-up.expanded {
+    top: 50%;
+    right: 50%;
+    transform: translate(50%, -50%) scale(1.5);
 }
 
 .generic-pop-up .pop-up-head{
@@ -26,13 +37,34 @@
     background-color: rgb(87, 87, 87);
     width: 99%;
     border-radius: 5px;
+    padding: 0.5em;
+    max-height: 100px;
+    transition: all 5s ease-in-out;
+}
+
+.generic-pop-up .description{
+    word-break: break-all;
+    text-overflow: ellipsis; 
+}
+
+.generic-pop-up .pop-up-content.colapsed{
+    background-color: rgb(87, 87, 87);
+    width: 99%;
+    border-radius: 5px;
     word-break: break-all;
     padding: 0.5em;
+    max-height: none;
 }
 
 .generic-pop-up .title{
+    display: flex;
+    align-items: center;
     font-size: 1.5em;
-    color: rgb(215, 140, 0);
+    color: rgb(0, 215, 115);
+}
+
+.generic-pop-up .title .material-symbols-outlined{
+    font-size: 1.5em;
 }
 
 .generic-pop-up .actions{
@@ -44,7 +76,7 @@
     user-select: none;
 }
 
-.generic-pop-up .actions .expand,
+.generic-pop-up .actions .copy,
 .generic-pop-up .actions .close{
     width: 2em;
     height: 2em;
@@ -60,9 +92,9 @@
     font-size: 1em;
 }
 
-.generic-pop-up .actions .expand:hover,
-.generic-pop-up .actions .expand:active{
-    background-color: rgb(0, 145, 60);
+.generic-pop-up .actions .copy:hover,
+.generic-pop-up .actions .copy:active{
+    background-color: rgb(0, 215, 115);
 }
 
 .generic-pop-up .actions .close:hover,
@@ -70,48 +102,12 @@
     background-color: rgb(240, 65, 65);
 }
 
-.generic-pop-up .actions .expand:hover,
+.generic-pop-up .actions .copy:hover,
 .generic-pop-up .actions .close:hover,
-.generic-pop-up .actions .expand:active,
+.generic-pop-up .actions .copy:active,
 .generic-pop-up .actions .close:active{
     transform: scale(1.2);
-    filter: brightness(1.5);
 }
-
-.pop-up-transaction-expand{
-    opacity: 1;
-    pointer-events: auto;
-    animation: pop-up-transaction-expand 0.5s ease-in-out forwards;
-}
-
-.pop-up-transaction-minimize{
-    opacity: 1;
-    pointer-events: auto;
-    animation: pop-up-transaction-minimize 0.5s ease-in-out forwards;
-}
-
-@keyframes pop-up-transaction-expand {
-    100% {
-        top: 50%;
-        right: 50%;
-        transform: translate(50%, -50%);
-        zoom: 150%;
-    }
-}
-
-@keyframes pop-up-transaction-minimize {
-    0%{
-        top: 50%;
-        right: 50%;
-        transform: translate(50%, -50%);
-        zoom: 150%;
-    }
-    100% {
-        top: 20px;
-        right: 20px;
-    }
-}
-
 /*usar como vermelho dps
 rgb(240, 65, 65);
 */

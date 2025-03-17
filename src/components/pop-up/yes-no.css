@@ -1,0 +1,22 @@
+.generic-pop-up .pop-up-footer{
+    display: flex;
+    padding-left: 50%;
+    gap: 0.2em;
+}
+
+.generic-pop-up .box-option{
+    display: flex;
+    align-items: center;
+    border-radius: 10px;
+    transition: all 1s ease-in-out;
+    margin-top: 0.5em;
+    padding: 0.5em;
+}
+
+.generic-pop-up .box-option:first-child:hover{
+    background-color: rgb(240, 65, 65);
+}
+
+.generic-pop-up .box-option:nth-child(2):hover{
+    background-color: rgb(0, 215, 115);
+}

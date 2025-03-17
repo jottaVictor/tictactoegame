@@ -4,23 +4,23 @@ import React, { createContext, useContext, useState } from 'react';
 const BlushContext = createContext({
     showBlus: () => {},
     hideBlush: () => {},
-    blushIsVisible: false
+    blushIsActive: false
 });
 
 export const BlushProvider = ({ children }) => {
-    const [blushIsVisible, setBlushIsVisible] = useState(false);
+    const [blushIsActive, setBlushIsActive] = useState(false);
 
     const showBlush = () => {
-        setBlushIsVisible(true)
+        setBlushIsActive(true)
         console.log("The blush was showed")
     }
     const hideBlush = () => {
-        setBlushIsVisible(false)
+        setBlushIsActive(false)
         console.log("The blush was hidden")
     }
 
     return (
-        <BlushContext.Provider value={{ showBlush, hideBlush, blushIsVisible }}>
+        <BlushContext.Provider value={{ showBlush, hideBlush, blushIsActive }}>
             {children}
         </BlushContext.Provider>
     );

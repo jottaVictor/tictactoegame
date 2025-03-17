@@ -8,36 +8,12 @@
     left: 0;
     opacity: 0;
     pointer-events: none;
+    transition: all 1s ease-in-out;
 }
 
-#blush.blush-fade-in{
+#blush.active{
     display: block;
-    animation: blush-fade-in 0.5s ease-in forwards;
     pointer-events: auto;
-}
-
-#blush.blush-fade-out{
-    animation: blush-fade-out 0.5s ease-out forwards;
-    pointer-events: none;
-}
-
-@keyframes blush-fade-in{
-    from{
-        opacity: 0;
-    }
-    to{
-        backdrop-filter: blur(15px);
-        opacity: 1;
-    }
-}
-
-@keyframes blush-fade-out{
-    from{
-        backdrop-filter: blur(15px);
-        opacity: 1;
-    }
-    to{
-        opacity: 0;
-        backdrop-filter: blur(0px);
-    }
+    backdrop-filter: blur(15px);
+    opacity: 1;
 }

@@ -1,7 +1,8 @@
 import React from 'react';
 // import Game from '../../public/components/game.js';
 import Board from '../components/tictactoe/board'
-import { GenericPopUp } from '../components/pop-up'
+import { GenericPopUp } from '../components/pop-up/generic'
+import { YesNoPopUp } from '../components/pop-up/yes-no'
 import { BlushProvider } from '../providers/blush' 
 import { GenericPopUpProvider } from '../providers/pop-up';
 // import Blush from '../../public/js/components/main'
@@ -17,7 +18,8 @@ const Page = () => {
                 <GenericPopUpProvider>
                     
                         <Blush/>
-                        <GenericPopUp description='OlaMundo'/>
+                        <GenericPopUp description='OlaMundo OlaMundo OlaMundo OlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundo'/>
+                        <YesNoPopUp title='Responda' description='Sim ou não? OlaMundo OlaMundo OlaMundo OlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundo'/>
                         <section>
                             <div style = {{ width: '500px', height: '500px'}}>
                                 <Board/>
@@ -32,7 +34,6 @@ const Page = () => {
 
 //TODO:
 /*
-- Fazer 
 - Fazer uma função para mudar o conteúdo do popup
 - Fazer outras funções para diferentes estilos de popups
 */
