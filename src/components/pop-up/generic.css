@@ -29,7 +29,7 @@
 
 .generic-pop-up .pop-up-head{
     width: 100%;
-    color: (219, 186, 0);
+    color: (220, 180, 0);
     padding: 0.5em 0px 0.5em 0px;
 }
 
@@ -38,16 +38,15 @@
     width: 99%;
     border-radius: 5px;
     padding: 0.5em;
-    max-height: 100px;
-    transition: all 5s ease-in-out;
+    transition: all 1s ease;
 }
 
-.generic-pop-up .description{
-    word-break: break-all;
-    text-overflow: ellipsis; 
+.generic-pop-up .pop-up-content .description{
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
-.generic-pop-up .pop-up-content.colapsed{
+.generic-pop-up .pop-up-content.expanded{
     background-color: rgb(87, 87, 87);
     width: 99%;
     border-radius: 5px;
@@ -56,15 +55,23 @@
     max-height: none;
 }
 
+.generic-pop-up .pop-up-content.expand .description{
+    white-space: normal;
+    text-overflow: none;
+}
+
 .generic-pop-up .title{
-    display: flex;
-    align-items: center;
-    font-size: 1.5em;
+    display: block;
+    font-size: 1.6em;
     color: rgb(0, 215, 115);
+    word-break: break-all;
+    line-height: 1;
 }
 
 .generic-pop-up .title .material-symbols-outlined{
-    font-size: 1.5em;
+    font-size: 1.3em;
+    float: left;
+    margin-right: .2em;
 }
 
 .generic-pop-up .actions{
@@ -85,7 +92,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: transform 0.3s ease-in-out;
+    transition: all 1s ease;
 }
 
 .generic-pop-up .actions .material-symbols-outlined{

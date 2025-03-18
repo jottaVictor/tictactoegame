@@ -1,11 +1,11 @@
 .generic-fade-in{
     pointer-events: auto;
-    animation: generic-fade-in 0.5s ease-in forwards;
+    animation: generic-fade-in 0.5s ease forwards;
 }
 
 .generic-fade-out{
     pointer-events: none;
-    animation: generic-fade-out 0.5s ease-in forwards;
+    animation: generic-fade-out 0.5s ease forwards;
 }
 
 @keyframes generic-fade-in{

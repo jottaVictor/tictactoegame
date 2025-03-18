@@ -8,15 +8,29 @@
     display: flex;
     align-items: center;
     border-radius: 10px;
-    transition: all 1s ease-in-out;
+    transition: all 1s ease;
     margin-top: 0.5em;
     padding: 0.5em;
+    user-select: none;
+    cursor: pointer;
+}
+
+.generic-pop-up .box-option:first-child{
+    background-color: rgb(170, 0, 0);
+}
+
+.generic-pop-up .box-option:nth-child(2){
+    background-color: rgb(0, 120, 65);
 }
 
 .generic-pop-up .box-option:first-child:hover{
-    background-color: rgb(240, 65, 65);
+    filter: brightness(1.5);
 }
 
 .generic-pop-up .box-option:nth-child(2):hover{
-    background-color: rgb(0, 215, 115);
+    filter: brightness(1.5);
+}
+
+.generic-pop-up .pop-up-head .material-symbols-outlined{
+    font-size: 1em;
 }

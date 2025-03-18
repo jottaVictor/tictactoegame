@@ -1,16 +1,15 @@
 'use client';
 import './generic.css'
-import './yes-no.css'
+import './confirm.css'
 import '../../css/index.css'
 import React, { useEffect, useState } from 'react'
 import { useBlush } from '../../providers/blush';
 
-export function YesNoPopUp(
+export function ConfirmPopUp(
     {
         title = 'Alerta!',
         description='',
         alwaysExpanded=false,
-        //here is a destructuring to allow passing the name 'isExpanded' as a prop
         isExpanded: defaultExpanded=false,
         timeToClose=5000
     }
@@ -32,17 +31,14 @@ export function YesNoPopUp(
 
     const expandPopUp = () => {
         setIsExpanded(true)
-        // showBlush()
     }
 
     const minimizePopUp = () => {
         setIsExpanded(false)
-        // hideBlush()
     }
 
     const closePopUp = () => {
         hidePopUp()
-        // hideBlush()
     }
 
     function clickExpand(){
@@ -62,15 +58,6 @@ export function YesNoPopUp(
     function yesFunc(){
         return
     }
-
-    //--------------
-    // const { 
-    //     expandGenericPopUp,
-    //     minimizeGenericPopUp,
-    //     closeGenericPopUp,
-    //     isActive,
-    //     isExpanded 
-    // } = useGenericPopUp()
 
     useEffect(
         () => {
@@ -111,10 +98,7 @@ export function YesNoPopUp(
             </div>
             <div className='pop-up-footer'>
                 <div className='box-option'>
-                    <span className='no-botton' title='Recusar' onClick={() => noFunc()}>Não</span><i className="material-symbols-outlined">close</i>
-                </div>
-                <div className='box-option'>
-                    <span className='yes-botton' title='Confirmar' onClick={() => yesFunc()}>Sim</span><i className="material-symbols-outlined">check</i>
+                    <span className='ok-botton' title='Ok' onClick={() => okFunc()}>OK</span>
                 </div>
             </div>
         </div>

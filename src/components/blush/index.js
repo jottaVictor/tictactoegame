@@ -5,7 +5,7 @@ import { useBlush } from '../../providers/blush';
 import './index.css'
 
 export default function Blush(){
-    const { blushIsActive } = useBlush()
+    const { isActive } = useBlush()
 
-    return (<div id='blush' className={`${blushIsActive ? 'active' : ''}`}></div>)
+    return (<div id='blush' className={`${isActive ? 'active' : ''}`}></div>)
 }

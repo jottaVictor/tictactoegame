@@ -3,6 +3,7 @@ import React from 'react';
 import Board from '../components/tictactoe/board'
 import { GenericPopUp } from '../components/pop-up/generic'
 import { YesNoPopUp } from '../components/pop-up/yes-no'
+import { ConfirmPopUp } from '../components/pop-up/confirm'
 import { BlushProvider } from '../providers/blush' 
 import { GenericPopUpProvider } from '../providers/pop-up';
 // import Blush from '../../public/js/components/main'
@@ -16,10 +17,10 @@ const Page = () => {
             {/* <Game/> */}
             <BlushProvider>
                 <GenericPopUpProvider>
-                    
                         <Blush/>
                         <GenericPopUp description='OlaMundo OlaMundo OlaMundo OlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundo'/>
-                        <YesNoPopUp title='Responda' description='Sim ou não? OlaMundo OlaMundo OlaMundo OlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundo'/>
+                        {/* <YesNoPopUp title='Responda' description='Sim ou não?' alwaysExpanded={false} isExpanded={false} timeToClose={500}/> */}
+                        <ConfirmPopUp description='aqui usamos cookies. aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.'></ConfirmPopUp>
                         <section>
                             <div style = {{ width: '500px', height: '500px'}}>
                                 <Board/>
