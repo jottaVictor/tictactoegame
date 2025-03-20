@@ -1,0 +1,24 @@
+.generic-pop-up .title{
+    color: var(--light-blue);
+}
+
+.generic-pop-up .pop-up-footer{
+    display: flex;
+    width: 100%;
+}
+
+.generic-pop-up .box-option{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    border-radius: 10px;
+    transition: all 1s ease-out;
+    margin-top: 0.5em;
+    padding: 0.5em;
+    user-select: none;
+    cursor: pointer;
+}
+
+.generic-pop-up .box-option:hover{
+    background-color: var(--light-blue);
+}

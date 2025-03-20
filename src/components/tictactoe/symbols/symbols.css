@@ -11,7 +11,7 @@
 .symbol0 .main-diagonal, .secondary-diagonal{
     height: 80%;
     width: 20%;
-    background-color: rgb(161, 19, 0);
+    background-color: var(--light-red);
     position: absolute;
     border-radius: 20px;
 }
@@ -28,6 +28,6 @@
     height: 80%;
     width: 80%;
     border-radius: 100%;
-    border: 1.5em solid rgb(0, 177, 15);
+    border: 1.5em solid var(--light-green);
     background-color: transparent;
 }

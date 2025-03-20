@@ -51,12 +51,8 @@ export function ConfirmPopUp(
             expandPopUp()
     }
 
-    function noFunc(){
-        return
-    }
-
-    function yesFunc(){
-        return
+    function okFunc(){
+        closePopUp()
     }
 
     useEffect(
@@ -83,12 +79,12 @@ export function ConfirmPopUp(
     }
 
     return (
-        <div className={`generic-pop-up ${isActive ? 'active' : ''} ${isExpanded ? 'expanded' : ''}`}>
+        <div className={`generic-pop-up ${isActive ? 'active' : (isExpanded ? '' : 'pop')} ${isExpanded ? 'expanded' : ''}`}>
             <div className='pop-up-head'>
                 <div className='grid grid-cols-10 overflow-visible!'>
                     <div className='col-span-8 title'><i className="material-symbols-outlined">question_mark </i><label>{title}</label></div>
                     <div className='col-span-2 actions pr-2'>
-                        <div className='copy' title='Copiar conteúdo' onClick={() => copyDescription()}><i className="material-symbols-outlined">content_copy</i></div>
+                        <div className='copy' title='Copiar dialog' onClick={() => copyDescription()}><i className="material-symbols-outlined">content_copy</i></div>
                         <div className='close' title='Fechar' onClick={() => closePopUp()}><i className="material-symbols-outlined">close</i></div>
                     </div>
                 </div>
@@ -97,8 +93,8 @@ export function ConfirmPopUp(
                 <div className='description'>{description}</div>
             </div>
             <div className='pop-up-footer'>
-                <div className='box-option'>
-                    <span className='ok-botton' title='Ok' onClick={() => okFunc()}>OK</span>
+                <div className='box-option' onClick={() => okFunc()}>
+                    <span className='ok-botton' title='OK'>OK</span>
                 </div>
             </div>
         </div>

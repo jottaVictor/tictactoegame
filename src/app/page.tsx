@@ -35,8 +35,15 @@ const Page = () => {
 
 //TODO:
 /*
-- Fazer uma função para mudar o conteúdo do popup
-- Fazer outras funções para diferentes estilos de popups
+
+POPUP
+- Mudar o nome dos popups para toasts
+- Componentizar melhor tipos de toasts (está sendo repetido algumas estruturas)
+- componente para a exibição dos toasts
+
+GAME
+- websocket
+- Após a centralização dos tipos de compentes, tratar o exception
 */
 
 export default Page;

@@ -16,11 +16,11 @@
 }
 
 .generic-pop-up .box-option:first-child{
-    background-color: rgb(170, 0, 0);
+    background-color: var(--dark-red);
 }
 
 .generic-pop-up .box-option:nth-child(2){
-    background-color: rgb(0, 120, 65);
+    background-color: var(--dark-green);
 }
 
 .generic-pop-up .box-option:first-child:hover{
@@ -33,4 +33,5 @@
 
 .generic-pop-up .pop-up-head .material-symbols-outlined{
     font-size: 1em;
+    /**mudar aqui**/
 }
