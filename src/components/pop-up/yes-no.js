@@ -5,7 +5,7 @@ import '../../css/index.css'
 import React, { useEffect, useState } from 'react'
 import { useBlush } from '../../providers/blush';
 
-export function YesNoPopUp(
+export function YesNo(
     {
         title = 'Alerta!',
         description='',

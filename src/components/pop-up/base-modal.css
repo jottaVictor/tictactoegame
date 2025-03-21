@@ -16,6 +16,15 @@
     transition: all 1s ease;
 }
 
+.modal:focus > .modal .content.expanded .description{
+    white-space: wrap;
+}
+
+.modal:focus > .modal.active{
+    opacity: 1;
+    pointer-events: auto;
+}
+
 .modal.active{
     opacity: 1;
     pointer-events: auto;
@@ -27,36 +36,27 @@
     transform: translate(50%, -50%) scale(1.5);
 }
 
-.modal .pop-up-head{
+.modal .head{
     width: 100%;
     color: (220, 180, 0);
     padding: 0.5em 0px 0.5em 0px;
 }
 
-.modal .pop-up-content{
+.modal .content{
     background-color: rgb(87, 87, 87);
     width: 99%;
     border-radius: 5px;
     padding: 0.5em;
 }
 
-.modal .pop-up-content .description{
+.modal .content .description{
     white-space: nowrap;
     text-overflow: ellipsis;
     text-align: justify;
     transition: all 1s ease;
 }
 
-.modal .pop-up-content.expanded{
-    background-color: rgb(87, 87, 87);
-    width: 99%;
-    border-radius: 5px;
-    word-break: break-word;
-    padding: 0.5em;
-    max-height: none;
-}
-
-.modal .pop-up-content.expanded .description{
+.modal .content.expanded .description{
     white-space: wrap;
 }
 
@@ -119,4 +119,9 @@
 .modal .actions .copy:active,
 .modal .actions .close:active{
     transform: scale(1.2);
+}
+
+.modal .footer{
+    display: flex;
+    width: 100%;
 }

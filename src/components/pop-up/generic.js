@@ -2,9 +2,8 @@
 import './generic.css'
 import React from 'react'
 import '../../css/index.css'
-import { useGenericPopUp } from '../../providers/pop-up'
 
-export function GenericPopUp({title = 'Alerta!', description='', timeToClose=5000}){    
+export default function Generic({title = 'Alerta!', description='', timeToClose=5000}){    
     const { 
         expandGenericPopUp,
         minimizeGenericPopUp,
@@ -28,8 +27,7 @@ export function GenericPopUp({title = 'Alerta!', description='', timeToClose=500
     }
 
     return (
-        <div className={`generic-pop-up ${isActive ? '' : ''} ${isExpanded ? 'expanded' : ''}`}>
-        {/* <div className={`generic-pop-up ${isActive ? 'active' : ''} ${isExpanded ? 'expanded' : ''}`}> */}
+        <div className={`modal ${isActive ? '' : ''} ${isExpanded ? 'expanded' : ''}`}>
             <div className='pop-up-head'>
                 <div className='grid grid-cols-10 overflow-visible!'>
                     <div className='col-span-8 title'>{icon}<span className="material-symbols-outlined">campaign</span><sumarry>{title}</sumarry></div>
@@ -39,7 +37,7 @@ export function GenericPopUp({title = 'Alerta!', description='', timeToClose=500
                     </div>
                 </div>
             </div>
-            <div className={`pop-up-content ${isExpanded ? 'colapsed' : ''}`} onClick={() => clickExpand()}>
+            <div className={`pop-up-content ${isExpanded ? 'colapsed' : ''}`} title={isExpanded ? 'Clique para minimizar' : 'Clique para diminuir'} onClick={() => clickExpand()}>
                 <div className='description'>{description}</div>
             </div>
         </div>

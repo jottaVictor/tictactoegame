@@ -1,10 +1,10 @@
-.generic-pop-up .pop-up-footer{
+.modal .pop-up-footer{
     display: flex;
     padding-left: 50%;
     gap: 0.2em;
 }
 
-.generic-pop-up .box-option{
+.modal .box-option{
     display: flex;
     align-items: center;
     border-radius: 10px;
@@ -15,23 +15,23 @@
     cursor: pointer;
 }
 
-.generic-pop-up .box-option:first-child{
+.modal .box-option:first-child{
     background-color: var(--dark-red);
 }
 
-.generic-pop-up .box-option:nth-child(2){
+.modal .box-option:nth-child(2){
     background-color: var(--dark-green);
 }
 
-.generic-pop-up .box-option:first-child:hover{
+.modal .box-option:first-child:hover{
     filter: brightness(1.5);
 }
 
-.generic-pop-up .box-option:nth-child(2):hover{
+.modal .box-option:nth-child(2):hover{
     filter: brightness(1.5);
 }
 
-.generic-pop-up .pop-up-head .material-symbols-outlined{
+.modal .pop-up-head .material-symbols-outlined{
     font-size: 1em;
     /**mudar aqui**/
 }

@@ -1,13 +1,13 @@
-.generic-pop-up .title{
+.modal .title{
     color: var(--light-blue);
 }
 
-.generic-pop-up .pop-up-footer{
+.modal .pop-up-footer{
     display: flex;
     width: 100%;
 }
 
-.generic-pop-up .box-option{
+.modal .box-option{
     width: 100%;
     display: flex;
     justify-content: center;
@@ -19,6 +19,6 @@
     cursor: pointer;
 }
 
-.generic-pop-up .box-option:hover{
+.modal .box-option:hover{
     background-color: var(--light-blue);
 }
