@@ -2,7 +2,7 @@
     color: var(--light-blue);
 }
 
-.modal .pop-up-footer{
+.modal .footer{
     display: flex;
     width: 100%;
 }

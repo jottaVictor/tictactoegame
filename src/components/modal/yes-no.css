@@ -1,4 +1,8 @@
-.modal .pop-up-footer{
+.modal .title{
+    color: var(--light-blue);
+}
+
+.modal .footer{
     display: flex;
     padding-left: 50%;
     gap: 0.2em;
@@ -29,9 +33,4 @@
 
 .modal .box-option:nth-child(2):hover{
     filter: brightness(1.5);
-}
-
-.modal .pop-up-head .material-symbols-outlined{
-    font-size: 1em;
-    /**mudar aqui**/
 }

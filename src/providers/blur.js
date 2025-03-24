@@ -1,29 +1,29 @@
 'use client'
 import React, { createContext, useContext, useState } from 'react';
 
-const BlushContext = createContext({
-    showBlush: () => {},
-    hideBlush: () => {},
+const BlurContext = createContext({
+    showBlur: () => {},
+    hideBlur: () => {},
     isActive: false
 });
 
-export const BlushProvider = ({ children }) => {
+export const BlurProvider = ({ children }) => {
     const [isActive, setIsActive] = useState(false);
 
-    const showBlush = () => {
+    const showBlur = () => {
         setIsActive(true)
         console.log("The blush was showed")
     }
-    const hideBlush = () => {
+    const hideBlur = () => {
         setIsActive(false)
         console.log("The blush was hidden")
     }
 
     return (
-        <BlushContext.Provider value={{ showBlush, hideBlush, isActive }}>
+        <BlurContext.Provider value={{ showBlur, hideBlur, isActive }}>
             {children}
-        </BlushContext.Provider>
+        </BlurContext.Provider>
     )
 }
 
-export const useBlush = () => useContext(BlushContext)
+export const useBlur = () => useContext(BlurContext)

@@ -4,7 +4,7 @@ import './confirm.css'
 import '../../css/index.css'
 // import React, { useEffect, useState } from 'react'
 // import { useBlush } from '../../providers/blush';
-import React from 'react'
+import React, { memo } from 'react'
 import { BaseModal, BaseAction, BaseDescription } from './base-modal'
 
 // export default function Confirm(
@@ -104,27 +104,29 @@ import { BaseModal, BaseAction, BaseDescription } from './base-modal'
 //     )
 // }
 
-export function Confirm({title, description = '', isExpanded = false, alwaysExpanded = false, okFunc = () => {}}){
-
-    function Head({copyDescription, closeModal}){
-        return (
-            <div className='grid grid-cols-10 pl-[8px]'>
-                <div className='col-span-8 title'><label>{title || 'Confirmação'}</label></div>
-                <BaseAction copyDescription={copyDescription} closeModal={closeModal}/>
-            </div>
-        )
-    }
+export function Confirm({title = 'Confirmação', description = '', isExpanded = true, alwaysExpanded = false, confirmFunc = () => {}}){
+    const Head = React.memo(({copyDescription, closeModal}) => (
+        <div className='grid grid-cols-10 pl-[8px]'>
+            <div className='col-span-8 title'><label>{title}</label></div>
+            <BaseAction copyDescription={copyDescription} closeModal={closeModal}/>
+        </div>
+    ))
     
-    function Footer({okFunc}){
+    const Footer = React.memo(({closeModal, confirmFunc}) => {
+        const clickOk = () => {
+            confirmFunc()
+            closeModal()
+        }
+
         return (
-            <div className='box-option' onClick={() => okFunc()}>
+            <div className='box-option' onClick={() => clickOk()}>
                 <span className='ok-botton' title='OK'>OK</span>
             </div>
         )
-    }
+    })
 
     return (
-        <BaseModal Head={Head} Content={BaseDescription} Footer={Footer} title={title} description={description} isExpanded={isExpanded} alwaysExpanded={alwaysExpanded} okFunc={okFunc}/>
+        <BaseModal Head={Head} Content={BaseDescription} Footer={Footer} title={title} description={description} isExpanded={isExpanded} alwaysExpanded={alwaysExpanded} confirmFunc={confirmFunc}/>
     )
 }
 

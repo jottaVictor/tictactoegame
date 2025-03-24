@@ -1,6 +1,6 @@
 'use client'
-import React, { useEffect, useState } from 'react'
-import { useBlush } from '../../providers/blush'
+import React, { useEffect, useState, useCallback } from 'react'
+import { useBlur } from '../../providers/blur'
 import './base-modal.css'
 
 export function BaseModal(
@@ -16,47 +16,28 @@ export function BaseModal(
     }
 ){
 
-    const {showBlush, hideBlush} = useBlush()
+    const {showBlur, hideBlur} = useBlur()
     const [isActive, setIsActive] = useState(true)
     const [isExpanded, setIsExpanded] = useState(defaultExpanded)
-
-    useEffect(
-        () => {
-            if(isActive && alwaysExpanded){
-                return expandModal()
-            }
-            if(!isActive)
-                hideBlush()
-        }
-    , [isActive])
-
-    useEffect(
-        () => {
-            if(isExpanded)
-                showBlush()
-            else
-                hideBlush()
-        }
-    , [isExpanded])
 
     const closeModal = () => {
         setIsActive(false)
         console.log("The generic Modal was hidden")
     }
 
-    const expandModal = () => {
+    const expandModal = useCallback(() => {
         setIsExpanded(true)
-    }
+    }, [])
 
-    const minimizeModal = () => {
+    const minimizeModal = useCallback(() => {
         setIsExpanded(false)
-    }
+    }, [])
 
     const clickExpand = () => {
         if(alwaysExpanded)
             return
         
-                console.log("Pass here")
+        console.log("Pass here")
 
         if(isExpanded)
             minimizeModal()
@@ -64,18 +45,18 @@ export function BaseModal(
             expandModal()
     }
 
-    const copyDescription = () => {
+    const copyDescription = useCallback(() => {
         let __title = title?.trim() ? `Titulo: ${title}\n` : ''
         let __description = description?.trim() ? `Descrição: ${description}` : ''
         navigator.clipboard.writeText(`${__title + __description}`)
-    }
+    }, [])
 
     const commonProps = {
         ...props,
         title,
         description,
-        showBlush,
-        hideBlush,
+        showBlur,
+        hideBlur,
         isActive,
         setIsActive,
         setIsExpanded,
@@ -84,14 +65,33 @@ export function BaseModal(
         minimizeModal,
         clickExpand,
         copyDescription,
-      };
+    };
+
+    useEffect(
+        () => {
+            if(isActive && alwaysExpanded){
+                return expandModal()
+            }
+            if(!isActive)
+                hideBlur()
+        }
+    , [isActive, expandModal, hideBlur])
+
+    useEffect(
+        () => {
+            if(isExpanded)
+                showBlur()
+            else
+                hideBlur()
+        }
+    , [isExpanded])
 
     return (
         <div className={`modal ${isActive ? 'active' : ''} ${isExpanded ? 'expanded' : ''}`}>
             <div className='head'>
                 {Head && <Head {...commonProps}/>}
             </div>
-            <div className={`content ${isExpanded ? 'expanded' : ''}`} title={isExpanded ? 'Clique para minimizar' : 'Clique para expandir'} onClick={() => clickExpand()}>
+            <div className={`content ${isExpanded ? 'expanded' : ''}`} title={!alwaysExpanded ? (isExpanded ? 'Clique para ver menos' : 'Clique para ver mais') : ''} onClick={() => clickExpand()}>
                 {Content && <Content {...commonProps}/>}
             </div>
             <div className='footer'>

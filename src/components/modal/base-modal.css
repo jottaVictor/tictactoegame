@@ -16,15 +16,6 @@
     transition: all 1s ease;
 }
 
-.modal:focus > .modal .content.expanded .description{
-    white-space: wrap;
-}
-
-.modal:focus > .modal.active{
-    opacity: 1;
-    pointer-events: auto;
-}
-
 .modal.active{
     opacity: 1;
     pointer-events: auto;
@@ -44,9 +35,12 @@
 
 .modal .content{
     background-color: rgb(87, 87, 87);
-    width: 99%;
+    max-height: 50vh;
+    max-width: 100%;
     border-radius: 5px;
     padding: 0.5em;
+    display: flex;
+    flex-direction: column;
 }
 
 .modal .content .description{
@@ -54,10 +48,12 @@
     text-overflow: ellipsis;
     text-align: justify;
     transition: all 1s ease;
+    overflow: hidden;
 }
 
 .modal .content.expanded .description{
     white-space: wrap;
+    overflow-y: auto;
 }
 
 .modal .title{
