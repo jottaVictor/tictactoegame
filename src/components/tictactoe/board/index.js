@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Symbol0, Symbol1 } from '../symbols'
 import Game from '../gameLogic/game'
 import './board.css'
-import { useGenericPopUp } from '../../../providers/ControllerModal'
+import { useGenericPopUp } from '../../../providers/controller-modal'
 
 export default function Board({ 
     sBoard="", 

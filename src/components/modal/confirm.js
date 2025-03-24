@@ -5,7 +5,7 @@ import '../../css/index.css'
 // import React, { useEffect, useState } from 'react'
 // import { useBlush } from '../../providers/blush';
 import React, { memo } from 'react'
-import { BaseModal, BaseAction, BaseDescription } from './base-modal'
+import { BaseModal, BaseHead, BaseDescription } from './base-modal'
 
 // export default function Confirm(
 //     {
@@ -104,18 +104,11 @@ import { BaseModal, BaseAction, BaseDescription } from './base-modal'
 //     )
 // }
 
-export function Confirm({title = 'Confirmação', description = '', isExpanded = true, alwaysExpanded = false, confirmFunc = () => {}}){
-    const Head = React.memo(({copyDescription, closeModal}) => (
-        <div className='grid grid-cols-10 pl-[8px]'>
-            <div className='col-span-8 title'><label>{title}</label></div>
-            <BaseAction copyDescription={copyDescription} closeModal={closeModal}/>
-        </div>
-    ))
-    
-    const Footer = React.memo(({closeModal, confirmFunc}) => {
+export default function Confirm({id, title = 'Confirmação', description = '', confirmFunc = () => {}, isExpanded = true, alwaysExpanded = false}){
+    const Footer = React.memo((props) => {
         const clickOk = () => {
-            confirmFunc()
-            closeModal()
+            props.confirmFunc()
+            props.closeModal()
         }
 
         return (
@@ -126,7 +119,7 @@ export function Confirm({title = 'Confirmação', description = '', isExpanded =
     })
 
     return (
-        <BaseModal Head={Head} Content={BaseDescription} Footer={Footer} title={title} description={description} isExpanded={isExpanded} alwaysExpanded={alwaysExpanded} confirmFunc={confirmFunc}/>
+        <BaseModal Head={BaseHead} Content={BaseDescription} Footer={Footer} title={title} description={description} isExpanded={isExpanded} alwaysExpanded={alwaysExpanded} confirmFunc={confirmFunc} type='confirm' id={id}/>
     )
 }
 

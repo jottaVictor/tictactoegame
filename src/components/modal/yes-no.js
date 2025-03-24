@@ -1,5 +1,4 @@
 'use client';
-import './generic.css'
 import './yes-no.css'
 import '../../css/index.css'
 import React, { useEffect, useState } from 'react'
@@ -122,7 +121,7 @@ import { BaseModal, BaseDescription, BaseAction } from './base-modal'
 //        )
 //}
 
-export function YesNo({title = 'Responda', description = '', isExpanded = true, alwaysExpanded = false, noFunc = () => {}, yesFunc = () => {}}){
+export default function YesNo({title = 'Responda', description = '', isExpanded = true, alwaysExpanded = false, noFunc = () => {}, yesFunc = () => {}}){
     const Head = React.memo(({copyDescription, closeModal}) => (
         <div className='grid grid-cols-10'>
             <div className='col-span-8 title'><i className="material-symbols-outlined">person_raised_hand</i><label>{title}</label></div>
@@ -154,6 +153,6 @@ export function YesNo({title = 'Responda', description = '', isExpanded = true, 
     })
 
     return (
-        <BaseModal Head={Head} Content={BaseDescription} Footer={Footer} title={title} description={description} isExpanded={isExpanded} alwaysExpanded={alwaysExpanded} yesFunc={yesFunc} noFunc={noFunc}/>
+        <BaseModal Head={Head} Content={BaseDescription} Footer={Footer} title={title} description={description} isExpanded={isExpanded} alwaysExpanded={alwaysExpanded} yesFunc={yesFunc} noFunc={noFunc} type='yes-no'/>
     )
 }

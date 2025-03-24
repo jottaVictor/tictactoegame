@@ -1,14 +1,14 @@
-.modal .title{
+.modal.yes-no .title{
     color: var(--light-blue);
 }
 
-.modal .footer{
+.modal.yes-no .footer{
     display: flex;
     padding-left: 50%;
     gap: 0.2em;
 }
 
-.modal .box-option{
+.modal.yes-no .box-option{
     display: flex;
     align-items: center;
     border-radius: 10px;
@@ -19,18 +19,18 @@
     cursor: pointer;
 }
 
-.modal .box-option:first-child{
+.modal.yes-no .box-option:first-child{
     background-color: var(--dark-red);
 }
 
-.modal .box-option:nth-child(2){
+.modal.yes-no .box-option:nth-child(2){
     background-color: var(--dark-green);
 }
 
-.modal .box-option:first-child:hover{
+.modal.yes-no .box-option:first-child:hover{
     filter: brightness(1.5);
 }
 
-.modal .box-option:nth-child(2):hover{
+.modal.yes-no .box-option:nth-child(2):hover{
     filter: brightness(1.5);
 }

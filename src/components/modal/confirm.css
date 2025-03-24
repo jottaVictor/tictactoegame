@@ -1,13 +1,13 @@
-.modal .title{
+.modal.confirm .title{
     color: var(--light-blue);
 }
 
-.modal .footer{
+.modal.confirm .footer{
     display: flex;
     width: 100%;
 }
 
-.modal .box-option{
+.modal.confirm .box-option{
     width: 100%;
     display: flex;
     justify-content: center;
@@ -17,8 +17,9 @@
     padding: 0.5em;
     user-select: none;
     cursor: pointer;
+    background-color: var(--dark-blue);
 }
 
-.modal .box-option:hover{
+.modal.confirm .box-option:hover{
     background-color: var(--light-blue);
 }

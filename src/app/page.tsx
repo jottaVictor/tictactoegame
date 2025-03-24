@@ -1,11 +1,17 @@
-import React from 'react';
+'use client'
+import React, { useEffect } from 'react';
 // import Game from '../../public/components/game.js';
 import Board from '../components/tictactoe/board'
-import { Confirm } from '../components/modal/confirm'
-import { YesNo } from '../components/modal/yes-no'
+import Confirm from '../components/modal/confirm'
+import YesNo from '../components/modal/yes-no'
+import ControllerModal from '../components/modal/controller-modal'
 import { BlurProvider } from '../providers/blur' 
 import './page.css'
 import Blur from '../components/blur';
+import { ControllerModalProvider } from '../providers/controller-modal';
+import { BaseModal } from '../components/modal/base-modal';
+import { describe } from 'node:test';
+import Secao from './secao'
 
 const Page = () => {
     return (
@@ -14,15 +20,14 @@ const Page = () => {
             {/* <Game/> */}
             <BlurProvider>
                     <Blur/>
-                    {/* <GenericPopUp description='OlaMundo OlaMundo OlaMundo OlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundo'/> */}
-                    <YesNo description='aqui usamos cookies. aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.'/>
-                    {/* <Confirm description='aqui usamos cookies. aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.'/> */}
-                    <section>
-                        <div style = {{ width: '500px', height: '500px'}}>
-                            {/* <Board/> */}
-                            {/* sBorders="bg-green-500!" firstToPlay="Y"  */}
-                        </div>
-                    </section>
+                    <ControllerModalProvider>
+                        <ControllerModal/>
+                        {/* <GenericPopUp description='OlaMundo OlaMundo OlaMundo OlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundo'/> */}
+                        {/* <YesNo description='aqui usamos cookies. aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.'/> */}
+                        {/* <Confirm description='aqui usamos cookies. aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.'/> */}
+                        {/* <BaseModal description='aaaa' alwaysExpanded={false}/> */}
+                        <Secao/>
+                    </ControllerModalProvider>
             </BlurProvider>
         </>
     );
@@ -30,6 +35,8 @@ const Page = () => {
 
 //TODO:
 /*
+
+- Criar path alias pra facilitar as importações
 
 POPUP
 - Mudar o nome dos popups para modal *
