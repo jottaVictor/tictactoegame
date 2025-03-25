@@ -1,10 +1,10 @@
 'use client'
 import React, { useEffect, useState, useCallback } from 'react'
-import { useBlur } from '../../providers/blur'
-import { useControllerModal } from '../../providers/controller-modal'
-import './base-modal.css'
+import { useBlur } from '@providers/blur'
+import { useControllerModal } from '@providers/controller-modal'
+import '@components/modal/base-modal.css'
 
-export function BaseModal(
+export default function BaseModal(
     {
         Head = null, 
         Content = null, 
@@ -14,10 +14,10 @@ export function BaseModal(
         isExpanded: defaultExpanded = true,
         alwaysExpanded = true,
         type = 'base',
+        style = {},
         ...props
     }
 ){
-
     const {showBlur, hideBlur} = useBlur()
     const { closeModalById } = useControllerModal()
     const [isActive, setIsActive] = useState(true)
@@ -73,8 +73,6 @@ export function BaseModal(
         copyDescription,
     };
 
-    console.log(commonProps)
-
     useEffect(
         () => {
             if(isActive && alwaysExpanded){
@@ -98,12 +96,22 @@ export function BaseModal(
         }
     , [isExpanded])
 
+    useEffect(
+        () => {
+            setTimeout(
+                () => {
+                    closeModal()
+                }
+            , 5000)
+        }
+    ,[props.id])
+
     return (
-        <div className={`modal ${isActive ? 'active' : ''} ${isExpanded ? 'expanded' : ''} ${type}`}>
+        <div className={`modal ${isActive ? 'active' : ''} ${isExpanded ? 'expanded' : ''} ${type}`} style={style}  onClick={clickExpand}>
             <div className='head'>
                 {Head ? <Head {...commonProps}/> : <BaseHead {...commonProps} /> }
             </div>
-            <div className={`content ${isExpanded ? 'expanded' : ''}`} title={!alwaysExpanded ? (isExpanded ? 'Clique para ver menos' : 'Clique para ver mais') : ''} onClick={() => clickExpand()}>
+            <div className={`content ${isExpanded ? 'expanded' : ''}`} title={!alwaysExpanded ? (isExpanded ? 'Clique para ver menos' : 'Clique para ver mais') : ''}>
                 {Content ? <Content {...commonProps}/> : <BaseDescription {...commonProps}/>}
             </div>
             <div className='footer'>
@@ -124,15 +132,19 @@ export function BaseHead(props){
 
 export function BaseDescription(props){
     return (
-        <p className='description'>{props.description}</p>
+        <p className='description'>{props.description || 'Conteúdo da mensagem aqui'}</p>
     )
 }
 
 export function BaseAction(props){
+    const stopPropagation = (e) => {
+        e.stopPropagation()
+    }
+
     return (
         <div className='col-span-2 actions pr-2'>
-            <div className='copy' title='Copiar conteúdo' onClick={() => props.copyDescription()}><span className="material-symbols-outlined">content_copy</span></div>
-            <div className='close' title='Fechar' onClick={() => props.closeModal()}><span className="material-symbols-outlined">close</span></div>
+            <div className='copy' title='Copiar conteúdo' onClick={(e) => { props.copyDescription(); stopPropagation(e)}}><span className="material-symbols-outlined">content_copy</span></div>
+            <div className='close' title='Fechar' onClick={(e) => { props.closeModal(); stopPropagation(e)}}><span className="material-symbols-outlined">close</span></div>
         </div>
     )
 }

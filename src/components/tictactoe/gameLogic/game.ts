@@ -1,6 +1,6 @@
 import Player from './player'
-import { generateId } from '../../../utils/utils'
-import PError from '../../../utils/pError'
+import { generateId } from "@utils/utils"
+import PError from '@utils/pError'
 
 type Board = (number | null)[][]
 
@@ -48,6 +48,11 @@ export default class Game{
         throw new PError(`O jogador não faz parte do jogo!`)
     }
 
+    getPlayerById(id: string): Player{
+        console.log('player aqui', this.players[this.getIndexPlayerById(id)])
+        return this.players[this.getIndexPlayerById(id)]
+    }
+
     getIndexOpposingPlayerById(id: string): indexPlayer{
         if(this.players[0]?.id === id && this.players[1] !== null)
             return 1
@@ -84,8 +89,6 @@ export default class Game{
             throw e
         }
 
-        
-
         opposingPlayerById.isMyTime = true
         opposingPlayerById.timeStarted = Date.now()
 
@@ -99,8 +102,6 @@ export default class Game{
         if(resultEndGame !== true){
             this.winnerID = resultEndGame
         }
-
-        console.log("ACABOU AQI")
 
         throw new PError("Fim de jogo!")
     }

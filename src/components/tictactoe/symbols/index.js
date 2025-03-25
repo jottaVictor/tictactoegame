@@ -1,4 +1,4 @@
-import './symbols.css'
+import '@components/tictactoe/symbols/symbols.css'
 import React from 'react'
 
 export const Symbol0 = (style = '') => {

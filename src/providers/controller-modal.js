@@ -7,8 +7,8 @@ const ControllerModalContext = createContext({
     setActiveModals: () => {},
     openBaseModal: (title = 'Aviso', description = '', expanded = true, alwaysExpanded = true) => {},
     openConfirmModal: (title = 'Aviso', description = '', confirmFunc = () => {}, expanded = true, alwaysExpanded = true) => {},
-    openYesNoModal: () => {},
-    closeModalById: () => {}
+    openYesNoModal: (title = 'Aviso', description = '', yesFunc = () => {}, noFunc = () => {}, isExpanded = true, alwaysExpanded = true) => {},
+    closeModalById: (id = '') => {}
 });
 
 export const ControllerModalProvider = ({ children }) => {
@@ -28,8 +28,11 @@ export const ControllerModalProvider = ({ children }) => {
         ])
     }
 
-    const openYesNoModal = () => {
-
+    const openYesNoModal = (title = 'Aviso', description = '', yesFunc = () => {}, noFunc = () => {}, isExpanded = true, alwaysExpanded = true) => {
+        setActiveModals(prevModals => [
+            ...prevModals,
+            { id: generateId(), title: title, description, yesFunc, noFunc, isExpanded, alwaysExpanded, type: 'yesNo'}
+        ])
     }
 
     const closeModalById = (id) => {

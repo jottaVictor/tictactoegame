@@ -1,4 +1,4 @@
-import PError from '../../../utils/pError'
+import PError from '@utils/pError'
 
 export default class Player{
     readonly id: string

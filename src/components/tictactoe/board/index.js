@@ -1,9 +1,9 @@
 'use client'
 import React, { useState, useEffect, useRef } from 'react'
-import { Symbol0, Symbol1 } from '../symbols'
-import Game from '../gameLogic/game'
-import './board.css'
-import { useGenericPopUp } from '../../../providers/controller-modal'
+import { Symbol0, Symbol1 } from '@components/tictactoe/symbols'
+import Game from '@components/tictactoe/gameLogic/game'
+import '@components/tictactoe/board/board.css'
+import { useControllerModal } from '@providers/controller-modal'
 
 export default function Board({ 
     sBoard="", 
@@ -27,7 +27,7 @@ export default function Board({
     const mainSymbol = <Symbol0 style={styleSymbol0}/>
     const secondarySymbol = <Symbol1 style={styleSymbol1}/>
 
-    const { showGenericPopUp } = useGenericPopUp()
+    const { openBaseModal, openConfirmModal, openYesNoModal, } = useControllerModal()
     
     useEffect(() => {
         console.log(`The gamemode was seted to ${mode}`)
@@ -53,8 +53,14 @@ export default function Board({
             try{
                 game.markAField(idCurrent, r, c)
             }catch(e){
-                showGenericPopUp()
-                //indentify wich case the game was finished
+                //fazer o caso do jogador ganhar por tempo limite excedido
+                if(game.winnerID){
+                    const indexPlayer = game.getIndexPlayerById(game.winnerID)
+                    openYesNoModal('Jogo Encerrado', `O jogador '${game.players[indexPlayer].alias ?? indexPlayer}' ganhou o jogo! Quer jogar novamente?`, () => {}, () => {}, true, false)
+                    return
+                }
+
+                openYesNoModal('Jogo Encerrado', `O jogo deu velha! Nenhum jogador venceu. Quer jogar novamente?`, () => {}, () => {}, true, false)
                 return
             }finally{
                 
