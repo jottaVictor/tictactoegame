@@ -1,3 +1,4 @@
+import { GenericReturn } from '../../../utils/interfaces'
 import PError from '../../../utils/pError'
 
 export default class Player{
@@ -15,36 +16,118 @@ export default class Player{
         this.isMyTime = isMyTime
     }
 
-    play(timePlayed: number | null): boolean{
-        this.validateTurn();
+    play(timePlayed: number | null): GenericReturn{
+        let returnObj: GenericReturn = {
+            message: '',
+            value: null,
+            code: null,
+            sucess: false            
+        }
+        let valid: GenericReturn;
+        
+        valid = this.validateTurn()
+        
+        if(!valid.sucess){
+            returnObj.message = valid.message
+            returnObj.code = 0
+            returnObj.sucess = false
+
+            return returnObj
+        }
+
         this.isMyTime = false;
 
-        if (this.timeLimit === null) return true;
+        if (this.timeLimit === null){
+            returnObj.code = 1
+            returnObj.sucess = true
 
-        this.validateTimePlayed(timePlayed);
-        this.updateTimeLimit(timePlayed!);
+            return returnObj
+        }
 
-        return true;
+        valid = this.validateTimePlayed(timePlayed);
+
+        if(!valid.sucess){
+            returnObj = {...valid}
+            returnObj.code = 2
+            
+            return returnObj
+        }
+
+        valid = this.updateTimeLimit(timePlayed);
+        
+        if(!valid.sucess){
+            returnObj = {...valid}
+            returnObj.code = 3
+
+            return returnObj
+        }
+
+        returnObj.code = 4
+        returnObj.sucess = true
+
+        return returnObj
     }
 
-    private validateTurn(): void {
+    private validateTurn(): GenericReturn {
+        let returnObj: GenericReturn = {
+            message: '',
+            code: 0,
+            value: null,
+            sucess: false
+        }
+
         if (!this.isMyTime) {
-            throw new PError(`Não é a vez do jogador ${this.alias ?? ''}!`);
+            returnObj.message = `Não é a vez do jogador ${this.alias ?? ''}!`
+            returnObj.code = 0
+            returnObj.sucess = false
+        }else{
+            returnObj.code = 1
+            returnObj.sucess = true
         }
+
+        return returnObj
     }
 
-    private validateTimePlayed(timePlayed: number | null): void {
+    private validateTimePlayed(timePlayed: number | null): GenericReturn {
+        let returnObj: GenericReturn = {
+            message: '',
+            value: null,
+            code: null,
+            sucess: false            
+        }
+
         if (timePlayed === null || this.timeStarted === null) {
-            throw new Error("Erro de lógica na passagem dos tempos");
+            returnObj.message = "Erro de lógica na passagem dos tempos"
+            returnObj.code = 0
+            returnObj.sucess = false
+        }else{
+            returnObj.code = 1
+            returnObj.sucess = true
         }
+
+        return returnObj
     }
 
-    private updateTimeLimit(timePlayed: number): void {
+    private updateTimeLimit(timePlayed: number): GenericReturn {
+        let returnObj: GenericReturn = {
+            message: '',
+            code: 0,
+            value: null,
+            sucess: false
+        }
+
         const timeSpent = timePlayed - this.timeStarted!;
         this.timeLimit! -= timeSpent;
 
         if (this.timeLimit! < 0) {
-            throw new PError("Tempo limite gasto.");
+            returnObj.message = "Tempo limite gasto."
+            returnObj.code = 0
+            returnObj.sucess = false
+        }else{
+            returnObj.code = 1
+            returnObj.sucess = true
         }
+        
+        return returnObj
     }
 }

@@ -12,6 +12,7 @@ import { ControllerModalProvider } from '../providers/controller-modal';
 import { BaseModal } from '../components/modal/base-modal';
 import { describe } from 'node:test';
 import Secao from './secao'
+import Game from '../components/tictactoe/gameLogic/game';
 
 const Page = () => {
     return (
@@ -26,7 +27,12 @@ const Page = () => {
                         {/* <YesNo description='aqui usamos cookies. aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.'/> */}
                         {/* <Confirm description='aqui usamos cookies. aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.'/> */}
                         {/* <BaseModal description='aaaa' alwaysExpanded={false}/> */}
-                        <Secao/>
+                        {/* <Secao/> */}
+                        <section>
+                            <div style = {{ width: '500px', height: '500px'}}>
+                                <Board timeLimitByPlayer={6000}/>
+                            </div>
+                        </section>
                     </ControllerModalProvider>
             </BlurProvider>
         </>
@@ -36,7 +42,7 @@ const Page = () => {
 //TODO:
 /*
 
-- Criar path alias pra facilitar as importações
+- Melhoarar a situação dos memo e useCallBack()
 
 POPUP
 - Mudar o nome dos popups para modal *

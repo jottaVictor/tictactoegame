@@ -3,7 +3,6 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Symbol0, Symbol1 } from '../symbols'
 import Game from '../gameLogic/game'
 import './board.css'
-import { useGenericPopUp } from '../../../providers/controller-modal'
 
 export default function Board({ 
     sBoard="", 
@@ -26,8 +25,6 @@ export default function Board({
 
     const mainSymbol = <Symbol0 style={styleSymbol0}/>
     const secondarySymbol = <Symbol1 style={styleSymbol1}/>
-
-    const { showGenericPopUp } = useGenericPopUp()
     
     useEffect(() => {
         console.log(`The gamemode was seted to ${mode}`)
@@ -42,7 +39,6 @@ export default function Board({
 
     const handlesClick = {
         playerxplayer: (r, c) => {
-            console.log(game);
             if (!game.players[0] || !game.players[1]) {
                 console.warn("Players are not set yet!");
                 return;
@@ -50,19 +46,18 @@ export default function Board({
 
             const idCurrent = game.players[0].isMyTime ? game.players[0].id : game.players[1].id
             
-            try{
-                game.markAField(idCurrent, r, c)
-            }catch(e){
-                showGenericPopUp()
-                //indentify wich case the game was finished
-                return
-            }finally{
-                
+            let valid
+            
+            if((valid = game.markAField(idCurrent, r, c)).sucess){
                 setBoard([
                     [...game.board[0]],
                     [...game.board[1]],
                     [...game.board[2]]
                 ])
+            }
+
+            if(!valid.sucess || valid.code === 6){
+                console.log(valid)
             }
         },
         playerxsocket: () => {

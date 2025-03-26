@@ -1,6 +1,8 @@
 import Player from './player'
 import { generateId } from '../../../utils/utils'
 import PError from '../../../utils/pError'
+// import { GenericReturn } from '@utils/interfaces'
+import { GenericReturn } from '../../../utils/interfaces'
 
 type Board = (number | null)[][]
 
@@ -15,6 +17,7 @@ export default class Game{
     private players: [Player | null, Player | null]
     private indexPlayerFirst: indexPlayer
     private winnerID: string | null
+    private finish: boolean
 
     constructor(timeLimitByPlayer: number | null, indexPlayerFirst: indexPlayer){
         this.timeLimitByPlayer = timeLimitByPlayer
@@ -22,6 +25,7 @@ export default class Game{
         this.players = [null, null]
         this.indexPlayerFirst = indexPlayerFirst
         this.winnerID = null
+        this.finish = false
     }
 
     joinInGame(alias: string | null): Player{
@@ -39,25 +43,70 @@ export default class Game{
         return newPlayer
     }
 
-    getIndexPlayerById(id: string): indexPlayer{
-        if(this.players[0]?.id === id)
-            return 0
-        if(this.players[1]?.id === id)
-            return 1
+    getIndexPlayerById(id: string): GenericReturn{
+        let returnObj: GenericReturn = {
+            message: '',
+            value: null,
+            code: 0,
+            sucess: false
+        }
 
-        throw new PError(`O jogador não faz parte do jogo!`)
+        if(this.players[0]?.id === id){
+            returnObj.value = 0
+            returnObj.code = 0
+            returnObj.sucess = true
+
+            return returnObj
+        }
+        
+        if(this.players[1]?.id === id){
+            returnObj.value = 1
+            returnObj.code = 0
+            returnObj.sucess = true
+            
+            return returnObj
+        }
+
+        returnObj.message = "O jogador não faz parte do jogo!"
+        returnObj.code = 1
+        returnObj.sucess = false
+
+        return returnObj
     }
 
-    getIndexOpposingPlayerById(id: string): indexPlayer{
-        if(this.players[0]?.id === id && this.players[1] !== null)
-            return 1
-        if(this.players[1]?.id === id && this.players[0] !== null)
-            return 0
+    getIndexOpposingPlayerById(id: string): GenericReturn{
+        let returnObj: GenericReturn = {
+            message: '',
+            value: null,
+            code: 0,
+            sucess: false
+        }
 
-        throw new PError(`Não foi achado um jogador oponente!`)
+        if(this.players[0]?.id === id && this.players[1] !== null){
+            returnObj.value = 1
+            returnObj.code = 0
+            returnObj.sucess = true
+
+            return returnObj
+        }
+        if(this.players[1]?.id === id && this.players[0] !== null){
+            returnObj.value = 0
+            returnObj.code = 0
+            returnObj.sucess = true
+
+            return returnObj
+        }
+
+        returnObj.message = "Não foi achado um jogador oponente!"
+        returnObj.code = 1
+        returnObj.sucess = false
+
+        return returnObj
     }
 
     startGame(){
+        this.finish = false
+
         const fPlayer = this.players[this.indexPlayerFirst]!
         fPlayer.isMyTime = true
 
@@ -65,26 +114,63 @@ export default class Game{
             fPlayer.timeStarted = Date.now()
     }
 
-    markAField(idPlayer: string, row: number, col: number){
-        if(this.winnerID)
-            throw new PError("O jogo já terminou! Comece outro para jogar novamente")
-
-        const indexCurrentPlayer = this.getIndexPlayerById(idPlayer)
-        const currentPlayer = this.players[indexCurrentPlayer]!
-        const opposingPlayerById = this.players[this.getIndexOpposingPlayerById(idPlayer)]!
-
-        this.validateField(row, col)
-        
-        try{
-            currentPlayer.play(Date.now())
-        }catch(e){
-            if(e instanceof PError && e.message === "Tempo limite gasto.")
-                this.winnerID = opposingPlayerById.id
-
-            throw e
+    markAField(idPlayer: string, row: number, col: number): GenericReturn{
+        let returnObj: GenericReturn = {
+            message: '',
+            value: null,
+            code: 0,
+            sucess: false
         }
 
+        let valid: GenericReturn
+
+        if(this.winnerID || this.finish){
+            //dps ajeitar esse acesso ao alias do player vencedor
+            returnObj.message = `O jogo já terminou. ${this.winnerID ? `O ganhador foi ${this.players[this.getIndexPlayerById(this.winnerID).value].alias}` : 'Terminou empatado!'}`
+            returnObj.code = 0
+            returnObj.sucess = false
+
+            return returnObj
+        }
+
+        if(!(valid = this.getIndexPlayerById(idPlayer)).sucess){
+            returnObj = {...returnObj}
+            returnObj.code = 1
+
+            return returnObj
+        }
+
+        const indexCurrentPlayer = valid.value
+
+        const currentPlayer = this.players[indexCurrentPlayer]!
+
+        if(!(valid = this.getIndexOpposingPlayerById(idPlayer)).sucess){
+            returnObj = {...returnObj}
+            returnObj.code = 2
+
+            return returnObj
+        }
+
+        const opposingPlayerById = this.players[valid.value]!
+
+        if(!(valid = this.validateField(row, col)).sucess){
+            returnObj = {...valid}
+            returnObj.code = 3
+
+            return returnObj
+        }
         
+        if(!(valid = currentPlayer.play(Date.now())).sucess){
+            if(valid.code === 3){
+                this.winnerID = opposingPlayerById.id
+                this.finish = true
+            }
+
+            returnObj = {...valid}
+            returnObj.code = 4
+
+            return returnObj
+        }
 
         opposingPlayerById.isMyTime = true
         opposingPlayerById.timeStarted = Date.now()
@@ -93,29 +179,59 @@ export default class Game{
 
         const resultEndGame = this.checkEndGame()
 
-        if(!resultEndGame)
-            return true
+        if(resultEndGame.code === 0){
+            this.finish = true
+            this.winnerID = resultEndGame.value
 
-        if(resultEndGame !== true){
-            this.winnerID = resultEndGame
+            returnObj = {...resultEndGame}
+            returnObj.code = 6
+
+            return returnObj
         }
 
-        console.log("ACABOU AQI")
+        if(resultEndGame.sucess){
+            this.finish = true
+            returnObj = {...resultEndGame}
+            returnObj.code = 5
 
-        throw new PError("Fim de jogo!")
+            return resultEndGame
+        }
+
+        returnObj.code = 7
+        returnObj.sucess = true
+
+        return returnObj
     }
     
-    private validateField(row: number, col: number): void {
-        if (this.board[row][col] !== null) {
-            throw new PError("A posição já foi preenchida, jogue em uma posição válida!");
+    private validateField(row: number, col: number): GenericReturn {
+        let returnObj: GenericReturn = {
+            message: '',
+            value: null,
+            code: 0,
+            sucess: false
         }
+
+        if (this.board[row][col] !== null) {
+            returnObj.message = "A posição já foi preenchida, jogue em uma posição válida!"
+            returnObj.code = 0
+            returnObj.sucess = false
+        }else{
+            returnObj.message = ""
+            returnObj.code = 1
+            returnObj.sucess = true
+        }
+
+        return returnObj
     }
 
-    /**
-     * Return the `idPlayer` who won, `true` when the game has ended and `false` when the game don't end
-     * @returns {String | boolean}
-     */
-    private checkEndGame(){
+    private checkEndGame(): GenericReturn{
+        let returnObj: GenericReturn = {
+            message: '',
+            code: 0,
+            value: null,
+            sucess: false
+        }
+        
         let winnerSymbols: (number | null)[] = []
         let hasFieldsToPlay = false
 
@@ -146,15 +262,26 @@ export default class Game{
                 }
 
                 if(i == 2 && winnerSymbols[k] !== null){
-                    console.log(`O jogador ${(winnerSymbols[k]+1)} ganhou!`)
-                    return this.players[winnerSymbols[k]]?.id
+                    returnObj.message = `O jogador ${(winnerSymbols[k]+1)} ganhou!`
+                    returnObj.code = 0
+                    returnObj.value = this.players[winnerSymbols[k]]?.id
+                    returnObj.sucess = true
+                    
+                    return returnObj
                 }
             }
         }
 
-        if(!hasFieldsToPlay)
-            return true
+        if(!hasFieldsToPlay){
+            returnObj.message = "O jogo deu velha! Não há mais campos para preencher"
+            returnObj.code = 1
+            returnObj.sucess = true
 
-        return false
+            return returnObj
+        }
+
+        returnObj.code = 2
+
+        return returnObj
     }
 }
