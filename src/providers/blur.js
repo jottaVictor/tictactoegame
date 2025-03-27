@@ -1,5 +1,6 @@
 'use client'
 import React, { createContext, useContext, useState } from 'react';
+import { log } from '@utils/utils'
 
 const BlurContext = createContext({
     showBlur: () => {},
@@ -12,11 +13,11 @@ export const BlurProvider = ({ children }) => {
 
     const showBlur = () => {
         setIsActive(true)
-        console.log("The blush was showed")
+        log("The blush was showed")
     }
     const hideBlur = () => {
         setIsActive(false)
-        console.log("The blush was hidden")
+        log("The blush was hidden")
     }
 
     return (

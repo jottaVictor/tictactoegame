@@ -4,6 +4,7 @@ import { Symbol0, Symbol1 } from '@components/tictactoe/symbols'
 import Game from '@components/tictactoe/gameLogic/game'
 import '@components/tictactoe/board/board.css'
 import { useControllerModal } from '@providers/controller-modal'
+import { log } from '@utils/utils'
 
 export default function Board({ 
     sBoard="", 
@@ -30,7 +31,7 @@ export default function Board({
     const { openBaseModal, openConfirmModal, openYesNoModal, } = useControllerModal()
     
     useEffect(() => {
-        console.log(`The gamemode was seted to ${mode}`)
+        log(`The gamemode was seted to ${mode}`)
 
         if(mode === 'playerxplayer'){
             game.joinInGame('Jogador 1')
@@ -60,11 +61,11 @@ export default function Board({
             }
 
             if(!valid.sucess || valid.code === 6){
-                console.log(valid)
+                log(valid)
             }
         },
         playerxsocket: () => {
-            console.log('playerxsocket handler not implemented yet')
+            log('playerxsocket handler not implemented yet')
         }
     }
 

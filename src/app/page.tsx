@@ -22,12 +22,7 @@ const Page = () => {
                         {/* <YesNo description='aqui usamos cookies. aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.'/> */}
                         {/* <Confirm description='aqui usamos cookies. aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.'/> */}
                         {/* <BaseModal description='aaaa' alwaysExpanded={false}/> */}
-                        <section>
-                            <div style = {{ width: '500px', height: '500px'}}>
-                                <Board/>
-                            </div>
-                        </section>
-                        {/* <Secao/> */}
+                        <Secao/>
                     </ControllerModalProvider>
             </BlurProvider>
         </>

@@ -1,23 +1,30 @@
 'use client';
+// import { log } from "@utils/utils"
 import '@components/modal/yes-no.css'
 import 'src/css/index.css'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { BaseModal, BaseDescription, BaseAction } from '@components/modal'
+import { log } from '@utils/utils';
 
 export default function YesNo(props){
+    log("YesNo rendelizada em: " + Date.now())
 
     const {id, title, description, yesFunc, noFunc, isExpanded, alwaysExpanded, style} = props
 
-    const Head = React.memo(({copyDescription, closeModal}) => {
+    const Head = ({copyDescription, closeModal, title}) => {
+        log("Head YesNo rendelizada em: " + Date.now())
+
         return (
-        <div className='grid grid-cols-10'>
-            <div className='col-span-8 title'><i className="material-symbols-outlined">person_raised_hand</i><label>{title}</label></div>
-            <BaseAction copyDescription={copyDescription} closeModal={closeModal}/>
-        </div>
+            <div className='grid grid-cols-10'>
+                <div className='col-span-8 title'><i className="material-symbols-outlined">person_raised_hand</i><label>{title}</label></div>
+                <BaseAction copyDescription={copyDescription} closeModal={closeModal}/>
+            </div>
         )
-    })
+    }
     
-    const Footer = React.memo(({closeModal, yesFunc, noFunc}) => {
+    const Footer = ({closeModal}) => {
+        log("Footer YesNo rendelizada em: " + Date.now())
+
         const stopPropagation = (e) => e.stopPropagation()
 
         const yesClick = (e) => {
@@ -42,9 +49,9 @@ export default function YesNo(props){
                 </div>
             </>
         )
-    })
+    }
 
     return (
         <BaseModal Head={Head} Content={BaseDescription} Footer={Footer} title={title} description={description} isExpanded={isExpanded} alwaysExpanded={alwaysExpanded} yesFunc={yesFunc} noFunc={noFunc} type='yes-no' id={id} style={style}/>
-        )
+    )
 }

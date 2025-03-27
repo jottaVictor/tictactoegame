@@ -1,5 +1,6 @@
 'use client'
 import React, { useEffect, useState, useCallback } from 'react'
+import { log } from '@utils/utils'
 import { useBlur } from '@providers/blur'
 import { useControllerModal } from '@providers/controller-modal'
 import '@components/modal/base-modal.css'
@@ -15,32 +16,33 @@ export default function BaseModal(
         alwaysExpanded = true,
         type = 'base',
         style = {},
+        children,
         ...props
     }
 ){
-    const {showBlur, hideBlur} = useBlur()
-    const { closeModalById } = useControllerModal()
-    const [isActive, setIsActive] = useState(true)
-    const [isExpanded, setIsExpanded] = useState(defaultExpanded)
+    log("Base Modal rendelizada em: " + Date.now())
 
-    const closeModal = () => {
+    const { showBlur, hideBlur}         = useBlur()
+    const { closeModalById }            = useControllerModal()
+    const [ isActive, setIsActive ]     = useState(true)
+    const [ isExpanded, setIsExpanded ] = useState(defaultExpanded)
+
+    const closeModal = useCallback(() => {
         setIsActive(false)
-        console.log("The generic Modal was hidden")
-    }
+        log("The base Modal was hidden")
+    })
 
     const expandModal = useCallback(() => {
         setIsExpanded(true)
-    }, [])
+    })
 
     const minimizeModal = useCallback(() => {
         setIsExpanded(false)
-    }, [])
+    })
 
     const clickExpand = () => {
         if(alwaysExpanded)
             return
-        
-        console.log("Pass here")
 
         if(isExpanded)
             minimizeModal()
@@ -52,26 +54,26 @@ export default function BaseModal(
         let __title = title?.trim() ? `Titulo: ${title}\n` : ''
         let __description = description?.trim() ? `Descrição: ${description}` : ''
         navigator.clipboard.writeText(`${__title + __description}`)
-    }, [])
+    })
 
     const commonProps = {
         ...props,
-        title, 
+        title,
         description,
-        isExpanded,
+        // isExpanded,
         alwaysExpanded,
         type,
         showBlur,
         hideBlur,
-        isActive,
+        // isActive,
         setIsActive,
         setIsExpanded,
         closeModal,
         expandModal,
         minimizeModal,
-        clickExpand,
+        // clickExpand,
         copyDescription,
-    };
+    }
 
     useEffect(
         () => {
@@ -96,15 +98,15 @@ export default function BaseModal(
         }
     , [isExpanded])
 
-    useEffect(
-        () => {
-            setTimeout(
-                () => {
-                    closeModal()
-                }
-            , 5000)
-        }
-    ,[props.id])
+    // useEffect(
+    //     () => {
+    //         setTimeout(
+    //             () => {
+    //                 closeModal()
+    //             }
+    //         , 5000)
+    //     }
+    // ,[props.id])
 
     return (
         <div className={`modal ${isActive ? 'active' : ''} ${isExpanded ? 'expanded' : ''} ${type}`} style={style}  onClick={clickExpand}>
@@ -121,30 +123,32 @@ export default function BaseModal(
     )
 }
 
-export function BaseHead(props){
+export function BaseHead({title, copyDescription, closeModal}){
+    log("Base Head rendelizada em: " + Date.now())
+
     return(
-        <div className='grid grid-cols-10 pl-[8px]'>
-            <div className='col-span-8 title'><label>{props.title}</label></div>
-            <BaseAction copyDescription={props.copyDescription} closeModal={props.closeModal}/>
+        <div className='grid grid-cols-10'>
+            <div className='col-span-8 title ml-[8px]'><label>{title}</label></div>
+            <BaseAction copyDescription={copyDescription} closeModal={closeModal}/>
         </div>
     )
 }
 
-export function BaseDescription(props){
+export function BaseDescription({description}){
+    log("Base Description rendelizada em: " + Date.now())
+
     return (
-        <p className='description'>{props.description || 'Conteúdo da mensagem aqui'}</p>
+        <p className='description'>{description || 'Conteúdo da mensagem aqui'}</p>
     )
 }
 
-export function BaseAction(props){
-    const stopPropagation = (e) => {
-        e.stopPropagation()
-    }
+export function BaseAction({copyDescription, closeModal}){
+    log("Base Action rendelizada em: " + Date.now())
 
     return (
         <div className='col-span-2 actions pr-2'>
-            <div className='copy' title='Copiar conteúdo' onClick={(e) => { props.copyDescription(); stopPropagation(e)}}><span className="material-symbols-outlined">content_copy</span></div>
-            <div className='close' title='Fechar' onClick={(e) => { props.closeModal(); stopPropagation(e)}}><span className="material-symbols-outlined">close</span></div>
+            <div className='copy' title='Copiar conteúdo' onClick={(e) => { copyDescription(); e.stopPropagation()}}><span className="material-symbols-outlined">content_copy</span></div>
+            <div className='close' title='Fechar' onClick={(e) => { closeModal(); e.stopPropagation()}}><span className="material-symbols-outlined">close</span></div>
         </div>
     )
 }
