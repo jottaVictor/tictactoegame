@@ -1,6 +1,5 @@
-import { GenericReturn } from '../../../utils/interfaces'
-import PError from '../../../utils/pError'
-
+import { GenericReturn } from '@utils/interfaces'
+import PError from '@utils/pError'
 export default class Player{
     readonly id: string
     readonly alias: string | null

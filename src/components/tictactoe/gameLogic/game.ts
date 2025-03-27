@@ -1,8 +1,6 @@
 import Player from './player'
-import { generateId } from '../../../utils/utils'
-import PError from '../../../utils/pError'
-// import { GenericReturn } from '@utils/interfaces'
-import { GenericReturn } from '../../../utils/interfaces'
+import { GenericReturn } from '@utils/interfaces'
+import { generateId } from "@utils/utils"
 
 type Board = (number | null)[][]
 

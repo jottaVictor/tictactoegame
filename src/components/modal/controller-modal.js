@@ -1,9 +1,7 @@
 'use client'
-import React, { useState } from 'react'
-import { useControllerModal } from '../../providers/controller-modal'
-import YesNo from './yes-no'
-import Confirm from './confirm'
-import { BaseModal } from './base-modal'
+import React from 'react'
+import { YesNo, Confirm, BaseModal } from '@components/modal'
+import { useControllerModal } from '@providers/controller-modal'
 
 export default function ControllerModal(){
     const { activeModals } = useControllerModal()
@@ -14,14 +12,18 @@ export default function ControllerModal(){
             {activeModals.map((modal, index) => {
                 const Modal = typeModals[modal.type] || null
                 
-                if (!Modal) return null 
-
-                const verticalOffset = modal.isExpanded ? 0 : 20 + index * 70
+                if (!Modal) return null
+                let top  = `calc(20px + ${index} * 5em)`
 
                 return (
                     <Modal
                         key={modal.id}
                         {...modal}
+                        style = {
+                            {
+                                top: top
+                            }
+                        }
                     />
                 )
             })}

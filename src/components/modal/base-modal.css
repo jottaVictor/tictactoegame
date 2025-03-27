@@ -4,10 +4,10 @@
     flex-direction: column;
     align-items: center;
     padding: 5px;
-    width: 20em;
+    max-width: 25em;
     position: absolute;
     top: 20px;
-    left: 20px;
+    right: 20px;
     border-radius: 5px;
     z-index: 100000;
     opacity: 0;
@@ -23,15 +23,15 @@
 
 .modal.expanded {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(1.5);
+    top: 50% !important;
+    right: 50%;
+    transform: translate(50%, -50%) scale(1.5);
 }
 
 .modal .head{
     width: 100%;
     color: (220, 180, 0);
-    padding: 0.5em 0px 0.5em 0px;
+    padding: 6px 0px;
 }
 
 .modal .content{
@@ -45,7 +45,7 @@
 .modal .content .description{
     background-color: rgb(87, 87, 87);
     padding: 8px;
-    border-radius: 5px;
+    border-radius: 8px;
     white-space: nowrap;
     text-overflow: ellipsis;
     text-align: justify;
@@ -54,8 +54,9 @@
 }
 
 .modal .content.expanded .description{
-    white-space: wrap;
+    white-space: break-spaces;
     overflow-y: auto;
+    word-wrap: break-word;
 }
 
 .modal .title{

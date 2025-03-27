@@ -1,8 +1,9 @@
 'use client'
 import React, { useState, useEffect, useRef } from 'react'
-import { Symbol0, Symbol1 } from '../symbols'
-import Game from '../gameLogic/game'
-import './board.css'
+import { Symbol0, Symbol1 } from '@components/tictactoe/symbols'
+import Game from '@components/tictactoe/gameLogic/game'
+import '@components/tictactoe/board/board.css'
+import { useControllerModal } from '@providers/controller-modal'
 
 export default function Board({ 
     sBoard="", 
@@ -25,6 +26,8 @@ export default function Board({
 
     const mainSymbol = <Symbol0 style={styleSymbol0}/>
     const secondarySymbol = <Symbol1 style={styleSymbol1}/>
+
+    const { openBaseModal, openConfirmModal, openYesNoModal, } = useControllerModal()
     
     useEffect(() => {
         console.log(`The gamemode was seted to ${mode}`)
