@@ -2,7 +2,7 @@
 import '@components/modal/confirm.css'
 import 'src/css/index.css'
 import React, { memo } from 'react'
-import { log } from '@utils/tils'
+import { log } from '@utils/utils'
 import { BaseModal, BaseHead, BaseDescription } from '@components/modal'
 
 export default function Confirm(props){

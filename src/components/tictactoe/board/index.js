@@ -21,42 +21,73 @@ export default function Board({
         [null, null, null]
     ]);
 
-    const gameRef = useRef(new Game(timeLimitByPlayer, firstToPlay));
-    const game = gameRef.current;
-    // const game = new Game(timeLimitByPlayer, firstToPlay)
+    const gameRef = useRef(undefined)
+    let ws
 
     const mainSymbol = <Symbol0 style={styleSymbol0}/>
     const secondarySymbol = <Symbol1 style={styleSymbol1}/>
 
     const { openBaseModal, openConfirmModal, openYesNoModal, } = useControllerModal()
+
+    const handleWithConnection = {
+        playerxplayer: () => {
+            gameRef.current = new Game(timeLimitByPlayer, firstToPlay)
+
+            gameRef.current.joinInGame('Jogador 1')
+            gameRef.current.joinInGame('Jogador 2')
+
+            gameRef.current.startGame()
+        },
+
+        playerxsocket: () => {
+            console.log("Tentando aqui")
+            ws = new WebSocket('ws://localhost:5000');
+
+            ws.onopen = () => ws.send(
+                JSON.stringify({
+                    data: {
+                        aliasPlayer: 'Player'
+                    },
+                    type: 'connect'
+                })
+            )
+
+            ws.onmessage = ({ data }) => {
+                if(data.type === 'validateConnect'){
+                    //armazenar id atribuido
+                    //armazenar estado do jogo
+                }
+
+                if(data.type === 'validateMarkAField'){
+                    //armazenar estado do jogo
+                }
+
+                console.log(`Received: ${data}`)
+            }
+        }
+    }
     
     useEffect(() => {
         log(`The gamemode was seted to ${mode}`)
-
-        if(mode === 'playerxplayer'){
-            game.joinInGame('Jogador 1')
-            game.joinInGame('Jogador 2')
-
-            game.startGame()
-        }
+        handleWithConnection[mode]()
     }, [mode])
 
     const handlesClick = {
         playerxplayer: (r, c) => {
-            if (!game.players[0] || !game.players[1]) {
+            if (!gameRef.current.players[0] || !gameRef.current.players[1]) {
                 console.warn("Players are not set yet!");
                 return;
             }
 
-            const idCurrent = game.players[0].isMyTime ? game.players[0].id : game.players[1].id
+            const idCurrent = gameRef.current.players[0].isMyTime ? gameRef.current.players[0].id : gameRef.current.players[1].id
             
             let valid
             
-            if((valid = game.markAField(idCurrent, r, c)).sucess){
+            if((valid = gameRef.current.markAField(idCurrent, r, c)).sucess){
                 setBoard([
-                    [...game.board[0]],
-                    [...game.board[1]],
-                    [...game.board[2]]
+                    [...gameRef.current.board[0]],
+                    [...gameRef.current.board[1]],
+                    [...gameRef.current.board[2]]
                 ])
             }
 
@@ -64,8 +95,18 @@ export default function Board({
                 log(valid)
             }
         },
-        playerxsocket: () => {
-            log('playerxsocket handler not implemented yet')
+
+        playerxsocket: (r, c) => {
+            ws.send(
+                JSON.stringify({
+                    data: {
+                        row: r,
+                        column: c,
+                        //id player
+                    },
+                    type: "markAField"
+                })
+            )
         }
     }
 

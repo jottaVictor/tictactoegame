@@ -31,10 +31,8 @@ const Page = () => {
 
 //TODO:
 /*
-Modal:
 
-- Gerenciar melhor as props
-- Melhorar ciclo de redering
+- Substituir valor por data em GenrericReturn
 
 GAME
 - websocket
