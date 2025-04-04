@@ -1,6 +1,6 @@
 export interface GenericReturn {
     message: string;
-    code: number;
-    value: any;
-    sucess: boolean;
+    code: number | null;
+    data: any;
+    success: boolean;
 };

@@ -9,7 +9,7 @@ import Board from '@components/tictactoe/board'
 import Secao from './secao'
 import Game from '../components/tictactoe/gameLogic/game';
 
-const Page = () => {
+export default function Page(){
     return (
         <>
             {/* <h1>Seja bem-vindo! Este é o seu jogo de Tic Tac Toe!</h1> */}
@@ -38,5 +38,3 @@ GAME
 - websocket
 - Após a centralização dos tipos de compentes, tratar o exception
 */
-
-export default Page;

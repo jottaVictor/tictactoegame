@@ -18,18 +18,18 @@ export default class Player{
     play(timePlayed: number | null): GenericReturn{
         let returnObj: GenericReturn = {
             message: '',
-            value: null,
+            data: null,
             code: null,
-            sucess: false            
+            success: false            
         }
         let valid: GenericReturn;
         
         valid = this.validateTurn()
         
-        if(!valid.sucess){
+        if(!valid.success){
             returnObj.message = valid.message
             returnObj.code = 0
-            returnObj.sucess = false
+            returnObj.success = false
 
             return returnObj
         }
@@ -38,14 +38,14 @@ export default class Player{
 
         if (this.timeLimit === null){
             returnObj.code = 1
-            returnObj.sucess = true
+            returnObj.success = true
 
             return returnObj
         }
 
         valid = this.validateTimePlayed(timePlayed);
 
-        if(!valid.sucess){
+        if(!valid.success){
             returnObj = {...valid}
             returnObj.code = 2
             
@@ -54,7 +54,7 @@ export default class Player{
 
         valid = this.updateTimeLimit(timePlayed);
         
-        if(!valid.sucess){
+        if(!valid.success){
             returnObj = {...valid}
             returnObj.code = 3
 
@@ -62,7 +62,7 @@ export default class Player{
         }
 
         returnObj.code = 4
-        returnObj.sucess = true
+        returnObj.success = true
 
         return returnObj
     }
@@ -71,17 +71,17 @@ export default class Player{
         let returnObj: GenericReturn = {
             message: '',
             code: 0,
-            value: null,
-            sucess: false
+            data: null,
+            success: false
         }
 
         if (!this.isMyTime) {
             returnObj.message = `Não é a vez do jogador ${this.alias ?? ''}!`
             returnObj.code = 0
-            returnObj.sucess = false
+            returnObj.success = false
         }else{
             returnObj.code = 1
-            returnObj.sucess = true
+            returnObj.success = true
         }
 
         return returnObj
@@ -90,18 +90,18 @@ export default class Player{
     private validateTimePlayed(timePlayed: number | null): GenericReturn {
         let returnObj: GenericReturn = {
             message: '',
-            value: null,
+            data: null,
             code: null,
-            sucess: false            
+            success: false            
         }
 
         if (timePlayed === null || this.timeStarted === null) {
             returnObj.message = "Erro de lógica na passagem dos tempos"
             returnObj.code = 0
-            returnObj.sucess = false
+            returnObj.success = false
         }else{
             returnObj.code = 1
-            returnObj.sucess = true
+            returnObj.success = true
         }
 
         return returnObj
@@ -111,8 +111,8 @@ export default class Player{
         let returnObj: GenericReturn = {
             message: '',
             code: 0,
-            value: null,
-            sucess: false
+            data: null,
+            success: false
         }
 
         const timeSpent = timePlayed - this.timeStarted!;
@@ -121,10 +121,10 @@ export default class Player{
         if (this.timeLimit! < 0) {
             returnObj.message = "Tempo limite gasto."
             returnObj.code = 0
-            returnObj.sucess = false
+            returnObj.success = false
         }else{
             returnObj.code = 1
-            returnObj.sucess = true
+            returnObj.success = true
         }
         
         return returnObj
