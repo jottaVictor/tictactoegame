@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { useControllerModal  } from '../providers/controller-modal';
+import { useControllerModal  } from '../../providers/controller-modal';
 import Board from '@components/tictactoe/board'
 
 export default function Secao(){

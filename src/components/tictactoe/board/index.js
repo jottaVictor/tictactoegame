@@ -1,10 +1,10 @@
 'use client'
 import React, { useState, useEffect, useRef } from 'react'
-import { Symbol0, Symbol1 } from '#components/tictactoe/symbols'
-import Game from '#components/tictactoe/gameLogic/game'
-import '#components/tictactoe/board/board.css'
-import { useControllerModal } from '#providers/controller-modal'
-import { log } from '#utils/utils'
+import { Symbol0, Symbol1 } from '@components/tictactoe/symbols'
+import Game from '@components/tictactoe/gameLogic/game'
+import '@components/tictactoe/board/board.css'
+import { useControllerModal } from '@providers/controller-modal'
+import { log } from '@utils/utils'
 
 export default function Board({ 
     sBoard="", 
@@ -19,9 +19,10 @@ export default function Board({
         [null, null, null],
         [null, null, null],
         [null, null, null]
-    ]);
+    ])
 
     const gameRef = useRef(undefined)
+    const playerDataRef = useRef({})
     let ws
 
     const mainSymbol = <Symbol0 style={styleSymbol0}/>
@@ -40,28 +41,30 @@ export default function Board({
         },
 
         playerxsocket: () => {
-            ws = new WebSocket('ws://localhost:5000');
+            ws = new WebSocket('ws://localhost:5000/game')
 
             ws.onopen = () => ws.send(
                 JSON.stringify({
+                    type: 'connectPlayerInGame',
                     data: { 
-                        aliasPlayer: 'Player',
-                        roomId: 0,
-                        roomPassword: ''
-                    },
-                    type: 'connectPlayerInGame'
+                        aliasPlayer: 'Player'
+                    }
                 })
             )
 
-            ws.onmessage = ({ data }) => {
+            ws.onmessage = ({data}) => {
+                let _message = JSON.parse(data.toString())
+                console.log(_message)
 
-                if(data.type === 'validateConnect'){
-                    //armazenar id atribuido
-                    //armazenar estado do jogo
+                if(data.type === 'connectPlayerInGame'){
+                    playerDataRef.current = _message.data.playerData
+                    gameRef.current = _message.data.game
+                    return
                 }
 
-                if(data.type === 'validateMarkAField'){
-                    //run a function to handle in front with the new state
+                if(data.type === 'markafield'){
+                    gameRef.current = _message.data.game
+                    return
                 }
 
                 console.log(`Received: ${data}`)
@@ -77,8 +80,8 @@ export default function Board({
     const handlesClick = {
         playerxplayer: (r, c) => {
             if (!gameRef.current.players[0] || !gameRef.current.players[1]) {
-                console.warn("Players are not set yet!");
-                return;
+                console.warn("Players are not set yet!")
+                return
             }
 
             const idCurrent = gameRef.current.players[0].isMyTime ? gameRef.current.players[0].id : gameRef.current.players[1].id
@@ -101,12 +104,11 @@ export default function Board({
         playerxsocket: (r, c) => {
             ws.send(
                 JSON.stringify({
+                    type: "markafield",
                     data: {
                         row: r,
                         column: c,
-                        //id player
-                    },
-                    type: "markAField"
+                    }
                 })
             )
         }
@@ -116,7 +118,7 @@ export default function Board({
         const elements = []
         
         for(let i = 0; i < 3; i++){
-            elements.push(<div className='board-cell' onClick={() => handlesClick[mode](row, i)} key={row * 3 + i}>{board[row][i] !== null ? (board[row][i] === 0 ? mainSymbol : secondarySymbol) : null}</div>);
+            elements.push(<div className='board-cell' onClick={() => handlesClick[mode](row, i)} key={row * 3 + i}>{board[row][i] !== null ? (board[row][i] === 0 ? mainSymbol : secondarySymbol) : null}</div>)
             if(i != 2)
                 elements.push(<div className={` border-coll ${sBorders} `} key={'border-' + row * 3 + i}></div>)
         }
