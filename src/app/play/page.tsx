@@ -14,17 +14,15 @@ export default function Page(){
         <>
             {/* <h1>Seja bem-vindo! Este é o seu jogo de Tic Tac Toe!</h1> */}
             {/* <Game/> */}
-            <BlurProvider>
-                    <Blur/>
-                    <ControllerModalProvider>
-                        <ControllerModal/>
-                        {/* <GenericPopUp description='OlaMundo OlaMundo OlaMundo OlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundo'/> */}
-                        {/* <YesNo description='aqui usamos cookies. aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.'/> */}
-                        {/* <Confirm description='aqui usamos cookies. aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.'/> */}
-                        {/* <BaseModal description='aaaa' alwaysExpanded={false}/> */}
-                        <Secao/>
-                    </ControllerModalProvider>
-            </BlurProvider>
+                <Blur/>
+                <ControllerModalProvider>
+                    <ControllerModal/>
+                    {/* <GenericPopUp description='OlaMundo OlaMundo OlaMundo OlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundoOlaMundo'/> */}
+                    {/* <YesNo description='aqui usamos cookies. aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.'/> */}
+                    {/* <Confirm description='aqui usamos cookies. aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.aqui usamos cookies.'/> */}
+                    {/* <BaseModal description='aaaa' alwaysExpanded={false}/> */}
+                    <Secao/>
+                </ControllerModalProvider>
         </>
     );
 };
