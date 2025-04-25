@@ -1,5 +1,5 @@
 #blur{
-    background-color: rgba(32, 32, 32, 0.15);
+    background-color: rgba(0, 0, 0, 0.15);
     width: 100%;
     height: 100%;
     position: fixed;
@@ -14,6 +14,6 @@
 #blur.active{
     display: block;
     pointer-events: auto;
-    backdrop-filter: blur(15px);
+    backdrop-filter: blur(5px);
     opacity: 1;
 }
