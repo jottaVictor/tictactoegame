@@ -14,7 +14,7 @@ export default function Page(){
             </nav>
             <main>
                 <section>
-                    <button className="btn-dark btn-play 1v1local" title='Jogar 1v1 local'>
+                    <a className="btn-dark btn-play 1v1local" title='Jogar 1v1 local'>
                         <h1>JOGAR</h1>
                         <div className="details">
                             <div className="icons">
@@ -25,8 +25,8 @@ export default function Page(){
                                 <h4>1v1 LOCAL</h4>
                             </div>
                         </div>
-                    </button>
-                    <button className="btn-dark btn-play 1v1online" title='Jogar 1v1 online'>
+                    </a>
+                    <a href='./play-online' className="btn-dark btn-play 1v1online" title='Jogar 1v1 online'>
                         <h1>JOGAR</h1>
                         <div className="details">
                             <div className="icons">
@@ -37,10 +37,10 @@ export default function Page(){
                                 <h4>1v1 ONLINE</h4>
                             </div>
                         </div>
-                    </button>
-                    <button title='Aprender a jogar' className='btn-dark'>
+                    </a>
+                    <a title='Aprender a jogar' className='btn-dark'>
                         <h1>COMO JOGAR</h1>
-                    </button>
+                    </a>
                 </section>
                 <ConfigGame></ConfigGame>
             </main>

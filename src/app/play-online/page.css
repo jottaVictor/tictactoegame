@@ -19,6 +19,19 @@ nav h1{
     transform: translate(10%, 50%);
 }
 
+nav a.back{
+    position: absolute;
+    top: 18px;
+    left: 16px;
+    padding: 7;
+    border-radius: 50%;
+}
+
+nav a svg{
+    color: #FFF;
+    height: 24px;
+}
+
 /* temp */
 
 img{
@@ -30,9 +43,14 @@ img{
 main{
     height: calc(100dvh - 80px);
     display: grid;
-    grid-template-rows: 1fr 7fr 1fr;
+    grid-template-rows: max-content max-content 1fr max-content;
     align-items: center;
     color: #FFF;
+}
+
+main button{
+    justify-content: center;
+    align-items: center;
 }
 
 main > h1{
@@ -60,7 +78,6 @@ main .head h1{
 main .head button{
     display: flex;
     flex-direction: row;
-    align-items: center;
     gap: 4px;
     padding-left: 8px;
     padding-right: 9px;
@@ -77,35 +94,184 @@ main .head button svg{
     height: 35px;
 }
 
-/* ROOMS */
+.row{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.search{
+    width: 100%;
+    padding: 10px 16px 0 16px;
+    position: relative;
+}
+
+.search svg{
+    position: absolute;
+    top: calc(50% + 5px);
+    right: 16px;
+    width: 50px;
+    height: calc(100% - 10px);
+    padding: 0 10px 0 10px;
+    transform: translate(0, -50%);
+    background-color: #686868;
+    pointer-events: stroke;
+    border: 1px solid #FFF;
+    border-radius: 0 16px 16px 0;
+    cursor: pointer;
+}
+
+.search input{
+    color: #FFF;
+    width: calc(100% - 50px);
+    padding: 6px;
+    font-size: 16px;
+    border-color: #FFF;
+    border-width: 1px 0 1px 1px;
+    border-radius: 16px 0 0 16px;
+    text-indent: 10px;
+    position: relative;
+}
+
+.search input::placeholder{
+    color: #d8d8d8;
+}
+
+.search input:focus {
+    outline: none;
+    /* box-shadow: 0 0 0 2px #8a2be2;  */
+    border-color: #8a2be2;
+}
+  
 
 .rooms{
     width: 100%;
     height: 100%;
-    padding: 20px 16px 0 16px;
-    background-color: antiquewhite;
+    padding: 16px;
+    overflow-y: auto;
+}
+
+.rooms .list{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto;
+    gap: 20px;
+}
+
+.card-room{
+    width: 100%;
+    border-radius: 12px;
+    padding: 10px;
+    position: relative;
+}
+
+.card-room:hover, .card-room:focus{
+    box-shadow: none;
+    filter: none;
+    transform: none;
+}
+
+.card-room .description{
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: "Inter", sans-serif;
+}
+
+.card-room .description h3:nth-child(2){
+    text-align: right;
+}
+
+.card-room h2{
+    font-weight: 400;
+}
+
+.card-room .privacity{
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    justify-content: right;
+}
+
+.card-room svg{
+    height: 20px;
+}
+
+.card-room button{
+    background-color: #FFF;
+    color: #8a2be2;
+    font-weight: 700;
+    font-family: "Inter", sans-serif;
+    width: 100%;
+    display: flex;
+    border-radius: 6px;
+    margin-top: 10px;
+    padding: 2px;
 }
 
 .warning-no-rooms{
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    height: 100%;
+    padding: 12px 10px 12px 10px;
+    justify-content: center;
+    color: #FFF;
+    text-align: center;
+}
 
+.warning-no-rooms .warning{
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    margin-bottom: 10px;
 }
 
 .warning-no-rooms svg{
-    height: 70px;
+    height: 50px;
+    flex-shrink: 0;
 }
 
-/* ROOMS */
+.warning-no-rooms, .error-list-rooms{
+    font-size: 20px;
+    font-weight: 700;
+    font-family: "Inter", sans-serif;
+}
+
+button.reload svg{
+    height: 35px;
+}
+
+button.reload{
+    font-size: 20px;
+    display: flex;
+    padding: 4px 4px 4px 9px;
+}
+
+.error-list-rooms > h1{
+    padding-bottom: 10px;
+}
+
+.error-list-rooms{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
 
 main > button{
     width: calc(100% - 32px);
-    margin: 30px 16px 0 16px;
+    margin: 0 16px 10px 16px;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    padding: 5px;
-    padding-right: 9px;
+    padding: 5px 5px 5px 9px;
 }
 
 main > button svg{
