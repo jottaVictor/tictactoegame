@@ -102,6 +102,16 @@ export default function Page(){
         setRoomsVisible(elements.length > 0 ? elements : noRooms(search))
     }
 
+    const [createRoomIsActive, setCreateRoomIsActive] = useState(true)
+    const handleCloseCreateRoom = (e) => {
+        if(isToHandleButton(e))
+            setCreateRoomIsActive(false)
+    }
+    const handleOpenCreateRoom = (e) => {
+        if(isToHandleButton(e))
+            setCreateRoomIsActive(true)
+    }
+
     return(
         <>
             <Blur></Blur>
@@ -113,7 +123,7 @@ export default function Page(){
             <main>
                 <div className="head">
                     <h1>SALAS</h1>
-                    <button type="button" className='btn-dark' title='Crie uma sala'>
+                    <button type="button" className='btn-dark' onClick={handleOpenCreateRoom} onKeyDown={handleOpenCreateRoom} title='Crie uma sala'>
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M440-280h80v-160h160v-80H520v-160h-80v160H280v80h160v160ZM200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Z"/></svg>
                         <span>CRIAR SALA</span>
                     </button>
@@ -129,9 +139,7 @@ export default function Page(){
                         {roomsVisible}
                     </section>
                 </section>
-                <div className="modal-create-room">
-                    <CreateRoom/>
-                </div>
+                <CreateRoom formIsActive={createRoomIsActive} handleCloseButton={handleCloseCreateRoom}/>
                 <button type="button" title='Ache uma sala pública' className='btn-dark'>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M120-120v-80h80v-640h400v40h160v600h80v80H680v-600h-80v600H120Zm320-320q17 0 28.5-11.5T480-480q0-17-11.5-28.5T440-520q-17 0-28.5 11.5T400-480q0 17 11.5 28.5T440-440Z"/></svg>
                     <div className="label">

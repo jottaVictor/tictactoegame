@@ -58,7 +58,7 @@ main > h1{
     color: #FFF;
 }
 
-main .head{
+main > .head{
     width: 100%;
     display: flex;
     flex-direction: row;
@@ -67,7 +67,7 @@ main .head{
     padding: 20px 16px 0 16px;
 }
 
-main .head h1{
+main > .head h1{
     font-family: "Special Gothic Condensed One", sans-serif;
     font-weight: 700;
     font-size: 60px;
@@ -75,7 +75,7 @@ main .head h1{
     text-align: center;
 }
 
-main .head button{
+main > .head button{
     display: flex;
     flex-direction: row;
     gap: 4px;
@@ -86,11 +86,11 @@ main .head button{
     height: 56px;
 }
 
-main .head button span{
+main > .head button span{
     font-size: 30px;
 }
 
-main .head button svg{
+main > .head button svg{
     height: 35px;
 }
 

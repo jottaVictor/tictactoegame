@@ -4,8 +4,11 @@ import ConfigGame from "@components/modal/config-game"
 import './page.css'
 import Blur from '@components/blur'
 import { BlurProvider } from '@providers/blur'
+import { useTheme } from '@providers/theme'
 
 export default function Page(){
+    const {theme} = useTheme()
+
     return (
         <>
             <Blur></Blur>
@@ -14,7 +17,7 @@ export default function Page(){
             </nav>
             <main>
                 <section>
-                    <a className="btn-dark btn-play 1v1local" title='Jogar 1v1 local'>
+                    <a className={`btn-${theme} btn-play 1v1local`} title='Jogar 1v1 local'>
                         <h1>JOGAR</h1>
                         <div className="details">
                             <div className="icons">
@@ -26,7 +29,7 @@ export default function Page(){
                             </div>
                         </div>
                     </a>
-                    <a href='./play-online' className="btn-dark btn-play 1v1online" title='Jogar 1v1 online'>
+                    <a href='./play-online' className={`btn-${theme} btn-play 1v1online`} title='Jogar 1v1 online'>
                         <h1>JOGAR</h1>
                         <div className="details">
                             <div className="icons">
@@ -38,7 +41,7 @@ export default function Page(){
                             </div>
                         </div>
                     </a>
-                    <a title='Aprender a jogar' className='btn-dark'>
+                    <a title='Aprender a jogar' className={`btn-${theme}`}>
                         <h1>COMO JOGAR</h1>
                     </a>
                 </section>
