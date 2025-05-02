@@ -16,7 +16,7 @@
 .form-modal.dark{
     background-color: #8a2be2;
     color: #FFF;
-    border: 1px solid #FFF;
+    border: 2px solid #FFF;
 }
 
 .form-modal.active{
@@ -57,7 +57,7 @@
 .form-modal.dark .input-box select, .form-modal.dark .input-box input{
     /* background-color: #e3c6ff; */
     color: #FFF;
-    border: 1px solid #FFF;
+    border: 2px solid #FFF;
 }
 
 .form-modal.dark .input-box input::placeholder{
@@ -80,7 +80,7 @@
 
 .form-modal.dark button.btn-close{
     background-color: #3d3d3d;
-    border: 1px solid #FFF;
+    border: 2px solid #FFF;
 }
 
 .form-modal button.btn-close svg{

@@ -12,7 +12,7 @@ export default function Page(){
     return (
         <>
             <Blur></Blur>
-            <nav className='ola'>
+            <nav className={`${theme}`}>
                 <img alt="Jogo da Velha" />
             </nav>
             <main>

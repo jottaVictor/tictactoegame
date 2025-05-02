@@ -137,12 +137,11 @@ main > .head button svg{
     color: #d8d8d8;
 }
 
-.search input:focus {
+.dark .search input:focus, .search input:hover, .dark .search input:focus ~ svg, .search input:hover ~ svg {
     outline: none;
     /* box-shadow: 0 0 0 2px #8a2be2;  */
     border-color: #8a2be2;
 }
-  
 
 .rooms{
     width: 100%;
@@ -167,10 +166,9 @@ main > .head button svg{
     position: relative;
 }
 
-.card-room:hover, .card-room:focus{
-    box-shadow: none;
-    filter: none;
-    transform: none;
+.dark .card-room{
+    background-color: #8a2be2;
+    border: 2px solid #FFF;
 }
 
 .card-room .description{

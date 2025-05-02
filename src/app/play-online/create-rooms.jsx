@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 
 import './create-room.css'
 import '@components/form/form-modal.css'
+import Toggle from '@components/toggle'
 
 import { useBlur } from '@providers/blur'
 import { useTheme } from '@providers/theme'
@@ -21,6 +22,8 @@ export default function CreateRoom({formIsActive, handleCloseButton}){
             password: ""
         }
     })
+
+    const [hasTimeLimit, setHasTimeLimit] = useState(false)
 
     useEffect(() => {
         if(formIsActive) showBlur()
@@ -51,7 +54,7 @@ export default function CreateRoom({formIsActive, handleCloseButton}){
                 </div>
                 <div className="input-box">
                     <label>Terá tempo limite por jogadas?</label>
-                    <input type="checkbox"/>
+                    <Toggle target={hasTimeLimit} onChange={() => {setHasTimeLimit(!hasTimeLimit)}}/>
                 </div>
                 <div className={`input-box ${config.timeLimitByPlayer !== null ? 'active' : ''}`}>
                     <label>Tempo limite</label>
@@ -63,7 +66,7 @@ export default function CreateRoom({formIsActive, handleCloseButton}){
                     <input type="text" placeholder="Como quer ser conhecido?"/>
                 </div>
                 <div className="input-box">
-                    <button type='button' class={`btn-${theme} mt-[5px]`}>CRIAR SALA</button>
+                    <button type='button' className={`btn-${theme} mt-[5px]`}>CRIAR SALA</button>
                 </div>
             </div>
         </form>
