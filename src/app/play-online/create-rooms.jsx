@@ -25,14 +25,20 @@ export default function CreateRoom({formIsActive, handleCloseButton}){
 
     const [hasTimeLimit, setHasTimeLimit] = useState(false)
 
+    const onChangePrivacity = () => {
+        const _config = {...config}
+        _config.room.isPublic = !config.room.isPublic
+        console.log(config.room.isPublic)
+        setConfig(_config)
+    }
+
     useEffect(() => {
         if(formIsActive) showBlur()
         else hideBlur()
     }, [formIsActive, showBlur, hideBlur])
 
     return(
-        <>
-        <form className={`form-modal ${theme} ${formIsActive ? "active" : ""}`}>
+        <form className={`form-modal ${formIsActive ? "active" : ""}`}>
             <button type="button" className="btn-close" onClick={handleCloseButton} onKeyDown={handleCloseButton}>
                 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" fill="currentColor"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
             </button>
@@ -46,30 +52,33 @@ export default function CreateRoom({formIsActive, handleCloseButton}){
                 </div>
                 <div className="input-box">
                     <label>Sua sala será pública?</label>
-                    <input type="checkbox"/>
+                    <Toggle target={config.room.isPublic} onChange={onChangePrivacity}/>
                 </div>
-                <div className={`input-box ${config.isPublic ? 'active' : ''}`}>
-                    <label>Senha</label>
-                    <input type="text" placeholder="Digite uma senha"/>
-                </div>
+                {config.room.isPublic === false? (
+                    <div className={`input-box`}>
+                        <label>Senha para a sala</label>
+                        <input type="text" placeholder="Digite uma senha"/>
+                    </div>
+                ) : <></>}
                 <div className="input-box">
                     <label>Terá tempo limite por jogadas?</label>
                     <Toggle target={hasTimeLimit} onChange={() => {setHasTimeLimit(!hasTimeLimit)}}/>
                 </div>
-                <div className={`input-box ${config.timeLimitByPlayer !== null ? 'active' : ''}`}>
-                    <label>Tempo limite</label>
-                    <input type="text" placeholder="Digite quanto tempo (em segundos)"/>
-                </div>
+                {hasTimeLimit ? (
+                    <div className={`input-box ${config.timeLimitByPlayer !== null ? 'active' : ''}`}>
+                        <label>Tempo limite</label>
+                        <input type="text" placeholder="Digite o tempo (em segundos)"/>
+                    </div>
+                ) : <></>}
                 <hr/>
                 <div className="input-box">
                     <label>Seu nome</label>
                     <input type="text" placeholder="Como quer ser conhecido?"/>
                 </div>
                 <div className="input-box">
-                    <button type='button' className={`btn-${theme} mt-[5px]`}>CRIAR SALA</button>
+                    <button type='button' className="btn mt-[5px]">CRIAR SALA</button>
                 </div>
             </div>
         </form>
-        </>
     )
 }

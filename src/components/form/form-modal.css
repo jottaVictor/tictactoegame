@@ -6,17 +6,18 @@
     z-index: 100000;
     width: 80%;
     max-width: 700px;
-    border-radius: 16px;
     transition: all 1s ease;
     opacity: 0;
     pointer-events: none;
     padding: 16px;
+    border-radius: 16px;
+    border: 2px solid;
 }
 
-.form-modal.dark{
+.dark .form-modal{
     background-color: #8a2be2;
     color: #FFF;
-    border: 2px solid #FFF;
+    border-color: #FFF;
 }
 
 .form-modal.active{
@@ -30,12 +31,12 @@
 
 .form-modal .head h1{
     font-family: "Special Gothic Condensed One", sans-serif;
-    font-size: 40px;
+    font-size: 35px;
 }
 
 .form-modal .input-box{
     font-family: "Inter", sans-serif;
-    font-size: 22px;
+    font-size: 18px;
     font-weight: 600;
     width: 100%;
     display: flex;
@@ -54,13 +55,17 @@
     width: 100%;
 }
 
-.form-modal.dark .input-box select, .form-modal.dark .input-box input{
+.form-modal .input-box button{
+    padding: 6px 12px 6px 12px;
+}
+
+.dark .form-modal .input-box select, .dark .form-modal .input-box input{
     /* background-color: #e3c6ff; */
     color: #FFF;
     border: 2px solid #FFF;
 }
 
-.form-modal.dark .input-box input::placeholder{
+.dark .form-modal .input-box input::placeholder{
     color: #d5a5fa;
 }
 
@@ -78,7 +83,7 @@
     padding: 2px;
 }
 
-.form-modal.dark button.btn-close{
+.dark .form-modal button.btn-close{
     background-color: #3d3d3d;
     border: 2px solid #FFF;
 }

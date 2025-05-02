@@ -12,12 +12,12 @@ export default function Page(){
     return (
         <>
             <Blur></Blur>
-            <nav className={`${theme}`}>
+            <nav className={theme}>
                 <img alt="Jogo da Velha" />
             </nav>
-            <main>
+            <main className={theme}>
                 <section>
-                    <a className={`btn-${theme} btn-play 1v1local`} title='Jogar 1v1 local'>
+                    <a className="btn btn-play 1v1local" title='Jogar 1v1 local'>
                         <h1>JOGAR</h1>
                         <div className="details">
                             <div className="icons">
@@ -29,7 +29,7 @@ export default function Page(){
                             </div>
                         </div>
                     </a>
-                    <a href='./play-online' className={`btn-${theme} btn-play 1v1online`} title='Jogar 1v1 online'>
+                    <a href='./play-online' className="btn btn-play 1v1online" title='Jogar 1v1 online'>
                         <h1>JOGAR</h1>
                         <div className="details">
                             <div className="icons">
@@ -41,7 +41,7 @@ export default function Page(){
                             </div>
                         </div>
                     </a>
-                    <a title='Aprender a jogar' className={`btn-${theme}`}>
+                    <a title='Aprender a jogar' className="btn">
                         <h1>COMO JOGAR</h1>
                     </a>
                 </section>

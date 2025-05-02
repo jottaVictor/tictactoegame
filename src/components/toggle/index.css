@@ -2,8 +2,8 @@
 .check-slider{
     display: flex;
     align-items: center;
-    width: 65px;
-    height: 30px;
+    width: 60px;
+    height: 28px;
     cursor: pointer;
     position: relative;
     border-radius: 16px;
@@ -20,15 +20,29 @@
 .check-slider .slider{
     position: absolute;
     left: 4px;
-    width: 20px;
-    height: 20px;
+    height: 70%;
+    aspect-ratio: 1/1;
     border-radius: 50%;
     transition: all .5s ease-in-out;
 }
 
 .check-slider input:checked ~ .slider{
-    left: auto;
     left: calc(100% - 20px - 4px);
+}
+
+.check-slider .text{
+    right: 8%;
+    position: absolute;
+    font-size: 15px;
+}
+
+.check-slider input:checked ~ .text{
+    left: 8%;
+}
+
+.dark .check-slider .text{
+    color: rgba(255, 255, 255, 0.877);
+    color: #d5a5fa;
 }
 
 .dark .check-slider{
