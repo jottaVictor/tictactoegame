@@ -28,6 +28,6 @@
     height: 80%;
     width: 80%;
     border-radius: 100%;
-    border: 1.5em solid var(--light-green);
+    border: 34px solid var(--light-green);
     background-color: transparent;
 }

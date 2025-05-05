@@ -1,0 +1,98 @@
+main{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+}
+
+.player-info{
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: calc(100% - 32px);
+    height: 60px;
+    font-family: "Inter", sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    border-radius: 8px;
+}
+
+.player-info .name{
+    width: 100%;
+    margin-left: 8px;
+}
+
+.player-info span{
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.player-info .icon, .placar{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    aspect-ratio: 1/1;
+    padding: 4px;
+}
+
+.player-info .icon .symbol1 .main{
+    border-width: 9px;
+}
+
+.placar{
+    flex-direction: column;
+    padding: 0 10px 0 10px;
+}
+
+.placar span{
+    max-width: 70px;
+}
+
+.timer{
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 30px;
+}
+
+.timer svg{
+    height: 100%;
+}
+
+.top .timer{
+    bottom: -40px;
+}
+
+.bottom .timer{
+    top: -40px;
+    right: 0;
+}
+
+.dark{
+    color: #FFF;
+}
+
+.dark .player-info{
+    background-color: #8a2be2;
+    border: 2px solid #38125c;
+}
+
+.dark .player-info .icon, .dark .player-info .placar{
+    background-color: #3c2255;
+}
+
+.content{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding: 50px 16px 50px 16px;
+}
+
+.box-board{
+    width: 100%;
+    aspect-ratio: 1/1;
+}
