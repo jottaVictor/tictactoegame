@@ -1,11 +1,4 @@
-main{
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    align-items: center;
-}
-
-.player-info{
+.mobile .player-info{
     position: relative;
     display: flex;
     align-items: center;
@@ -15,20 +8,20 @@ main{
     font-weight: 700;
     font-size: 20px;
     border-radius: 8px;
+    gap: 8px;
 }
 
-.player-info .name{
+.mobile .player-info .name{
     width: 100%;
-    margin-left: 8px;
 }
 
-.player-info span{
+.mobile .player-info span{
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
 }
 
-.player-info .icon, .placar{
+.mobile .player-info .icon, .mobile .placar{
     display: flex;
     align-items: center;
     justify-content: center;
@@ -37,20 +30,20 @@ main{
     padding: 4px;
 }
 
-.player-info .icon .symbol1 .main{
+.mobile .player-info .icon .symbol1 .main{
     border-width: 9px;
 }
 
-.placar{
+.mobile .placar{
     flex-direction: column;
     padding: 0 10px 0 10px;
 }
 
-.placar span{
+.mobile .placar span{
     max-width: 70px;
 }
 
-.timer{
+.mobile .timer{
     position: absolute;
     display: flex;
     flex-direction: row;
@@ -58,33 +51,20 @@ main{
     height: 30px;
 }
 
-.timer svg{
+.mobile .timer svg{
     height: 100%;
 }
 
-.top .timer{
+.mobile .top .timer{
     bottom: -40px;
 }
 
-.bottom .timer{
+.mobile .bottom .timer{
     top: -40px;
     right: 0;
 }
 
-.dark{
-    color: #FFF;
-}
-
-.dark .player-info{
-    background-color: #8a2be2;
-    border: 2px solid #38125c;
-}
-
-.dark .player-info .icon, .dark .player-info .placar{
-    background-color: #3c2255;
-}
-
-.content{
+.mobile .content{
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -92,7 +72,23 @@ main{
     padding: 50px 16px 50px 16px;
 }
 
-.box-board{
+.mobile .box-board{
     width: 100%;
     aspect-ratio: 1/1;
+}
+
+.mobile .box-board .symbol1 .main{
+    border-width: 30px;
+}
+
+@media (max-width: 630px){
+    .mobile .box-board .symbol1 .main{
+        border-width: 20px;
+    }
+}
+
+@media (max-width: 350px){
+    .mobile .box-board .symbol1 .main{
+        border-width: 12px;
+    }
 }

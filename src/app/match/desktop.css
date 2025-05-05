@@ -1,0 +1,91 @@
+nav.desktop{
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    height: 70px;
+    padding: 0 16px 0 16px;
+    margin-top: 16px;
+}
+
+.desktop .player-info{
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 50%;
+    height: 60px;
+    font-family: "Inter", sans-serif;
+    font-weight: 700;
+    border-radius: 8px;
+    gap: 8px;
+}
+
+.desktop .player-info.right{
+    flex-direction: row-reverse;
+}
+
+.desktop .player-info .name{
+    font-size: 20px;
+    max-width: calc(100% - 100px);
+}
+
+.desktop .player-info span{
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.desktop .player-info .icon{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    aspect-ratio: 1/1;
+    padding: 4px;
+}
+
+.desktop .placar{
+    clip-path: polygon(10% 100%, 90% 100%, 100% 0%, 0% 0%);
+    display: flex;
+    flex-direction: row;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%);
+    position: absolute;
+    background-color: #3c2255;
+    font-family: "Inter", sans-serif;
+    font-weight: 700;
+    padding: 10px 16px 10px 16px;
+    gap: 4px;
+}
+
+.desktop .right .timer, .desktop .left .timer{
+    bottom: -36px;
+}
+
+.desktop .timer{
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 30px;
+}
+
+.desktop .timer svg{
+    height: 100%;
+}
+
+.desktop .placar span{
+    font-size: 40px;
+}
+
+.desktop .player-info .symbol1 .main{
+    border-width: 7px;
+}
+
+.desktop .box-board{
+    width: 100%;
+    max-width: 800px;
+    aspect-ratio: 1/1;
+}

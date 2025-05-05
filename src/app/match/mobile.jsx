@@ -14,7 +14,7 @@ export default function Mobile(){
 
     return (
         <>
-            <main className={theme}>
+            <main className={`${theme} mobile`}>
                 <div className="player-info top">
                     <div className="icon">
                         <Symbol0/>
