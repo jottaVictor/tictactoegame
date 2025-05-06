@@ -1,38 +1,49 @@
 import Player from './player'
-import { GenericReturn } from '@utils/interfaces'
-import { generateId } from "@utils/utils"
+import { GenericReturn, createGenericReturn } from '@utils/interfaces'
 
 type Board = (number | null)[][]
-
-enum indexPlayer {
-    First = 0,
-    Second = 1
-}
 
 export default class Game{
     private board: Board
     private timeLimitByPlayer: number | null
     private players: [Player | null, Player | null]
-    private indexPlayerFirst: indexPlayer
+    private idPlayerFirst: string | null
     private winnerID: string | null
+    private started: boolean
     private finish: boolean
-    private isOnline: boolean
 
-    constructor(timeLimitByPlayer: number | null, indexPlayerFirst: indexPlayer, isOnline: boolean){
+    constructor(timeLimitByPlayer: number | null, idPlayerFirst: string){
         this.timeLimitByPlayer = timeLimitByPlayer
-        this.board = Array.from({ length: 3 }, () => Array(3).fill(null));
+        this.board = Array.from({ length: 3 }, () => Array(3).fill(null))
         this.players = [null, null]
-        this.indexPlayerFirst = indexPlayerFirst
+        this.idPlayerFirst = idPlayerFirst
         this.winnerID = null
+        this.started = false
         this.finish = false
-        this.isOnline = isOnline
     }
 
-    joinInGame(id : string | null, alias: string | null): Player{
+    setConfigGame(timeLimitByPlayer: number | null, idPlayerFirst: string){
+        this.timeLimitByPlayer = timeLimitByPlayer
+        this.idPlayerFirst = idPlayerFirst
+    }
+
+    setIdPlayerFirst(idPlayer: string){
+        this.idPlayerFirst = idPlayer
+    }
+
+    getBoard(){
+        return this.board
+    }
+
+    joinInGame(idPlayer : string, alias: string | null): Player{
         if(this.players[0] !== null && this.players[1] !== null)
             throw new Error("O jogo já está lotado.")
 
-        const newPlayer = new Player(id || generateId(), alias, this.timeLimitByPlayer, null, false)
+        if(idPlayer && this.isInGame(idPlayer)){
+            throw new Error("O jogador já está no jogo.")
+        }
+
+        const newPlayer = new Player(idPlayer, alias, this.timeLimitByPlayer, null, false)
         
         if(this.players[0] === null){
             this.players[0] = newPlayer
@@ -45,7 +56,7 @@ export default class Game{
 
     leavePlayer(idPlayer: string): GenericReturn{
         const returnIndexPlayer = this.getIndexPlayerById(idPlayer)
-        if(returnIndexPlayer.code !== 1){
+        if(returnIndexPlayer.code === 1){
             return {
                 message: "O jogador não está no jogo",
                 code: 0,
@@ -65,10 +76,24 @@ export default class Game{
     }
 
     isFull(): boolean{
-        return (this.players[0] === null || this.players[1] === null)
+        return !(this.players[0] === null || this.players[1] === null)
     }
 
-    getIndexPlayerById(id: string): GenericReturn{
+    isEmpty(): boolean{
+        return this.players[0] === null && this.players[1] === null
+    }
+
+    getCountPlayer(): number{
+        let countPlayer = 0
+        this.players.map((item) => {
+            if(item)
+                countPlayer++
+        })
+
+        return countPlayer
+    }
+
+    getIndexPlayerById(idPlayer: string): GenericReturn{
         let returnObj: GenericReturn = {
             message: '',
             data: null,
@@ -76,7 +101,7 @@ export default class Game{
             success: false
         }
 
-        if(this.players[0]?.id === id){
+        if(this.players[0]?.id === idPlayer){
             returnObj.data = 0
             returnObj.code = 0
             returnObj.success = true
@@ -84,7 +109,7 @@ export default class Game{
             return returnObj
         }
         
-        if(this.players[1]?.id === id){
+        if(this.players[1]?.id === idPlayer){
             returnObj.data = 1
             returnObj.code = 0
             returnObj.success = true
@@ -99,7 +124,7 @@ export default class Game{
         return returnObj
     }
 
-    getIndexOpposingPlayerById(id: string): GenericReturn{
+    getIndexOpposingPlayerById(idPlayer: string): GenericReturn{
         let returnObj: GenericReturn = {
             message: '',
             data: null,
@@ -107,14 +132,14 @@ export default class Game{
             success: false
         }
 
-        if(this.players[0]?.id === id && this.players[1] !== null){
+        if(this.players[0]?.id === idPlayer && this.players[1] !== null){
             returnObj.data = 1
             returnObj.code = 0
             returnObj.success = true
 
             return returnObj
         }
-        if(this.players[1]?.id === id && this.players[0] !== null){
+        if(this.players[1]?.id === idPlayer && this.players[0] !== null){
             returnObj.data = 0
             returnObj.code = 0
             returnObj.success = true
@@ -129,19 +154,115 @@ export default class Game{
         return returnObj
     }
 
+    getPlayerById(idPlayer: string){
+        let returnObj: GenericReturn = {
+            message: '',
+            data: null,
+            code: 0,
+            success: false
+        }
 
-    isInGame(id: string): boolean{
-        return (this.getIndexPlayerById(id).code !== 1)
+        if(this.players[0]?.id === idPlayer){
+            returnObj.data = this.players[0]
+            returnObj.code = 0
+            returnObj.success = true
+
+            return returnObj
+        }
+        
+        if(this.players[1]?.id === idPlayer){
+            returnObj.data = this.players[1]
+            returnObj.code = 0
+            returnObj.success = true
+            
+            return returnObj
+        }
+
+        returnObj.message = "O jogador não faz parte do jogo!"
+        returnObj.code = 1
+        returnObj.success = false
+
+        return returnObj
     }
 
-    startGame(){
-        this.finish = false
+    getIdOpponentById(idPlayer: string): GenericReturn{
+        const returnObj = createGenericReturn()
+        
+        if(this.isInGame(idPlayer)){
+            returnObj.message = "O jogador não está no jogo"
+            return returnObj
+        }
 
-        const fPlayer = this.players[this.indexPlayerFirst]!
-        fPlayer.isMyTime = true
+        if(!this.isFull()){
+            returnObj.message = "Sem adversários no jogo"
+            returnObj.code = 1
+            return returnObj
+        }
+
+        if(this.players[0]?.id !== idPlayer){
+            returnObj.data = this.players[0]!.id
+            returnObj.code = 2
+            returnObj.success = true
+            return  returnObj
+        }
+
+        returnObj.data = this.players[1]!.id
+        returnObj.code = 3
+        returnObj.success = true
+
+        return returnObj
+    }
+
+    isInGame(idPlayer: string): boolean{
+        return (this.getIndexPlayerById(idPlayer).code !== 1)
+    }
+
+    startGame(): GenericReturn{
+        const returnObj = createGenericReturn()
+
+        if(this.started){
+            returnObj.message = "O jogo ainda está acontecendo."
+            
+            return returnObj
+        }
+
+        if(!this.isFull()){
+            returnObj.message = "O jogo deve ter dois jogadores para começar."
+            returnObj.code = 1
+            
+            return returnObj
+        }
+
+        if(!this.idPlayerFirst){
+            returnObj.message = "Ainda não foi definido quem será o primeiro a jogar."
+            returnObj.code = 2
+
+            return returnObj
+        }
+
+
+        const returnGetterPlayer = this.getPlayerById(this.idPlayerFirst)
+
+        if(returnGetterPlayer.code === 1){
+            returnObj.message = "O primeiro jogador não foi definido"
+            returnObj.code = 3
+            
+            return returnObj
+        }
+
+        this.started = true
+        this.finish = false
+        this.board = Array.from({ length: 3 }, () => Array(3).fill(null))
+        returnGetterPlayer.data.isMyTime = true
 
         if(this.timeLimitByPlayer)
-            fPlayer.timeStarted = Date.now()
+            returnGetterPlayer.data.timeStarted = Date.now()
+
+        returnObj.message = ""
+        returnObj.code = 4
+        returnObj.success = true
+
+        return returnObj
     }
 
     markAField(idPlayer: string, row: number, col: number): GenericReturn{
@@ -154,10 +275,16 @@ export default class Game{
 
         let valid: GenericReturn
 
-        if(this.winnerID || this.finish){
-            //dps ajeitar esse acesso ao alias do player vencedor
-            returnObj.message = `O jogo já terminou. ${this.winnerID ? `O ganhador foi ${this.players[this.getIndexPlayerById(this.winnerID).data].alias}` : 'Terminou empatado!'}`
+        if(!this.started){
+            returnObj.message = "O jogo ainda não começou."
             returnObj.code = 0
+            returnObj.success = false
+            return returnObj
+        }
+
+        if(this.winnerID || this.finish){
+            returnObj.message = "O jogo já terminou."
+            returnObj.code = 1
             returnObj.success = false
 
             return returnObj
@@ -165,7 +292,7 @@ export default class Game{
 
         if(!(valid = this.getIndexPlayerById(idPlayer)).success){
             returnObj = {...returnObj}
-            returnObj.code = 1
+            returnObj.code = 2
 
             return returnObj
         }
@@ -176,7 +303,7 @@ export default class Game{
 
         if(!(valid = this.getIndexOpposingPlayerById(idPlayer)).success){
             returnObj = {...returnObj}
-            returnObj.code = 2
+            returnObj.code = 3
 
             return returnObj
         }
@@ -185,19 +312,19 @@ export default class Game{
 
         if(!(valid = this.validateField(row, col)).success){
             returnObj = {...valid}
-            returnObj.code = 3
+            returnObj.code = 4
 
             return returnObj
         }
         
         if(!(valid = currentPlayer.play(Date.now())).success){
-            if(valid.code === 3){
+            if(valid.code === 5){
                 this.winnerID = opposingPlayerById.id
                 this.finish = true
             }
 
             returnObj = {...valid}
-            returnObj.code = 4
+            returnObj.code = 6
 
             return returnObj
         }
@@ -214,7 +341,7 @@ export default class Game{
             this.winnerID = resultEndGame.data
 
             returnObj = {...resultEndGame}
-            returnObj.code = 6
+            returnObj.code = 7
 
             return returnObj
         }
@@ -222,12 +349,12 @@ export default class Game{
         if(resultEndGame.success){
             this.finish = true
             returnObj = {...resultEndGame}
-            returnObj.code = 5
+            returnObj.code = 8
 
             return resultEndGame
         }
 
-        returnObj.code = 7
+        returnObj.code = 9
         returnObj.success = true
 
         return returnObj
@@ -292,9 +419,9 @@ export default class Game{
                 }
 
                 if(i == 2 && winnerSymbols[k] !== null){
-                    returnObj.message = `O jogador ${(winnerSymbols[k]+1)} ganhou!`
+                    returnObj.message = `O jogador ${((winnerSymbols[k] as number)+1)} ganhou!`
                     returnObj.code = 0
-                    returnObj.data = this.players[winnerSymbols[k]]?.id
+                    returnObj.data = this.players[(winnerSymbols[k] as number)]?.id
                     returnObj.success = true
                     
                     return returnObj

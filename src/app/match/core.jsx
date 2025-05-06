@@ -42,7 +42,7 @@ export default function Page(){
         }
 
         if(__firstToPlay = queryParams.get('ftp')){
-            if(__firstToPlay === "self" || __firstToPlay === "opponent") setFirstToPlay(__firstToPlay)
+            if(__firstToPlay === "self" || __firstToPlay === "opponent") setFirstToPlay(__firstToPlay === "self" ? 0 : 1)
             else setHasError(true)
         }
     }
@@ -66,7 +66,7 @@ export default function Page(){
 
     const handleWithConnection = {
         playerxplayer: () => {
-            gameRef.current = new Game(timeLimitByPlayer, firstToPlay, false)
+            gameRef.current = new Game(timeLimitByPlayer, firstToPlay)
 
             gameRef.current.joinInGame(null, 'Jogador 1')
             gameRef.current.joinInGame(null, 'Jogador 2')

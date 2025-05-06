@@ -3,4 +3,13 @@ export interface GenericReturn {
     code: number | null;
     data: any;
     success: boolean;
-};
+}
+
+export function createGenericReturn(): GenericReturn{
+    return {
+        message: "",
+        code: 0,
+        data: null,
+        success: false
+    }
+}

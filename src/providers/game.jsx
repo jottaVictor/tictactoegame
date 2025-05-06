@@ -1,6 +1,9 @@
 'use client'
 import React, { createContext, useContext, useState, useRef } from 'react'
 
+import { log } from '@utils/utils'
+import { setConfig } from 'next/config'
+
 const GameContext = createContext({
     board: [[null, null, null], [null, null, null], [null, null, null]],
     setBoard: () => {},
@@ -11,7 +14,9 @@ const GameContext = createContext({
     setTimeLimitByPlayer: () => {},
     firstToPlay: null,
     setFirstToPlay: () => {},
-    handleClick: () => {}
+    handleClick: () => {},
+    configOnline: {},
+    setConfigOnline: () => {}
 })
 
 export const GameProvider = ({ children }) => {
@@ -20,6 +25,7 @@ export const GameProvider = ({ children }) => {
     const gameRef = useRef(null)
     const [timeLimitByPlayer, setTimeLimitByPlayer] = useState(null)
     const [firstToPlay, setFirstToPlay] = useState(0)
+    const [configOnline, setConfigOnline] = useState({})
 
     const handleClick = {
         playerxplayer: (r, c) => {
@@ -65,6 +71,7 @@ export const GameProvider = ({ children }) => {
             mode, setMode, 
             timeLimitByPlayer, setTimeLimitByPlayer,
             firstToPlay, setFirstToPlay,
+            configOnline, setConfigOnline,
             gameRef, handleClick }}>
             {children}
         </GameContext.Provider>
