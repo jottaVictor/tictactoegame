@@ -1,0 +1,45 @@
+main{
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+}
+
+.dark{
+    color: #FFF;
+}
+
+.dark .player-info{
+    background-color: #8a2be2;
+    border: 2px solid #38125c;
+}
+
+.dark .player-info .icon, .dark .player-info .placar{
+    background-color: #3c2255;
+}
+
+.error{
+    width: 100%;
+    height: 100dvh;
+    padding: 16px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: "Inter", sans-serif;
+    font-weight: 700;
+}
+
+.error h1{
+    font-size: 20px;
+}
+
+.error svg{
+    height: 70px;
+}
+
+.btn{
+    padding: 10px;
+}
