@@ -2,30 +2,46 @@
 import React, { createContext, useContext, useState, useRef } from 'react'
 
 import { log } from '@utils/utils'
-import { setConfig } from 'next/config'
 
 const GameContext = createContext({
     board: [[null, null, null], [null, null, null], [null, null, null]],
     setBoard: () => {},
-    mode: "playerxplayer",
-    setMode: () => {},
-    gameRef: null,
-    timeLimitByPlayer: null,
-    setTimeLimitByPlayer: () => {},
-    firstToPlay: null,
-    setFirstToPlay: () => {},
     handleClick: () => {},
-    configOnline: {},
-    setConfigOnline: () => {}
+    config: {
+        game: {
+            timeLimitByPlayer: null,
+            firstPlayer: "self",
+        },
+        room: {
+            ownerPlayer: "self",
+            isPublic: true,
+            password: ""
+        },
+        mode: "playerxplayer"
+    },
+    setConfig: () => {},
+    gameRef: null,
+    playerDataRef: null,
+    wsRef: null,
 })
 
 export const GameProvider = ({ children }) => {
     const [board, setBoard] = useState([[null, null, null], [null, null, null], [null, null, null]])
-    const [mode, setMode] = useState("playerxplayer")
+    const [config, setConfig] = useState({
+        game: {
+            timeLimitByPlayer: null,
+            firstPlayer: "self",
+        },
+        room: {
+            ownerPlayer: "self",
+            isPublic: true,
+            password: ""
+        },
+        mode: "playerxplayer"
+    })
     const gameRef = useRef(null)
-    const [timeLimitByPlayer, setTimeLimitByPlayer] = useState(null)
-    const [firstToPlay, setFirstToPlay] = useState(0)
-    const [configOnline, setConfigOnline] = useState({})
+    const playerDataRef = useRef(null)
+    const wsRef = useRef(null)
 
     const handleClick = {
         playerxplayer: (r, c) => {
@@ -53,7 +69,7 @@ export const GameProvider = ({ children }) => {
         },
 
         playerxsocket: (r, c) => {
-            ws.send(
+            wsRef.current.send(
                 JSON.stringify({
                     type: "markafield",
                     data: {
@@ -67,12 +83,12 @@ export const GameProvider = ({ children }) => {
 
     return (
         <GameContext.Provider value={{ 
-            board, setBoard, 
-            mode, setMode, 
-            timeLimitByPlayer, setTimeLimitByPlayer,
-            firstToPlay, setFirstToPlay,
-            configOnline, setConfigOnline,
-            gameRef, handleClick }}>
+            board, setBoard,
+            config, setConfig,
+            gameRef,
+            playerDataRef,
+            wsRef,
+            handleClick }}>
             {children}
         </GameContext.Provider>
     )

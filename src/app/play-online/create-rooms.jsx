@@ -1,35 +1,80 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 
 import './create-room.css'
 import '@components/form/form-modal.css'
 import Toggle from '@components/toggle'
 
 import { useBlur } from '@providers/blur'
-import { useTheme } from '@providers/theme'
+import { useGame } from '@providers/game'
 
-export default function CreateRoom({formIsActive, handleCloseButton}){
+export default function CreateRoom({formIsActive, handleCloseButton, handleCreateRoom, disableForm}){
     const {showBlur, hideBlur} = useBlur()
-    const {theme} = useTheme()
+    const {config, setConfig, gameRef, playerDataRef, wsRef} = useGame()
 
-    const [config, setConfig] = useState({
-        game: {
-            timeLimitByPlayer: null,
-            firstPlayer: "self",
-        },
-        room: {
-            ownerPlayer: "self",
-            isPublic: true,
-            password: ""
-        }
-    })
+    const [clicked, setClicked] = useState(false)
+
+    const formRef = useRef(null)
+
+    const [isPublic, setIsPublic] = useState()
 
     const [hasTimeLimit, setHasTimeLimit] = useState(false)
 
-    const onChangePrivacity = () => {
-        const _config = {...config}
-        _config.room.isPublic = !config.room.isPublic
-        console.log(config.room.isPublic)
-        setConfig(_config)
+    const handleClick = () => {
+        if(clicked){
+            disableForm()
+            return
+        }
+
+        setClicked(true)
+
+        const form = formRef.current
+
+        const __config = {...config, game: {firstPlayer: "self"}, room: {ownerPlayer: "self"}}
+        __config.game.timeLimitByPlayer = form.hasTimeLimit.checked && form.timeLimit.value ? form.timeLimit.value : null
+        __config.room.name = form.roomName.value
+        __config.room.isPublic = form.isPublic.checked
+        __config.room.password = form.password?.value ?? ''
+        __config.mode = "playerxsocket"
+        setConfig(__config)
+        
+        if(playerDataRef.current)
+            playerDataRef.current.aliasPlayer = form.aliasPlayer.value
+        else
+            playerDataRef.current = {aliasPlayer: form.aliasPlayer.value}
+
+        wsRef.current = new WebSocket('ws://172.18.16.1:5000/game')
+
+        const playerData = playerDataRef.current
+        const ws = wsRef.current
+
+        const __message = {}
+        __message.type = 'connectPlayerInGame'
+        __message.data = { aliasPlayer: playerData.aliasPlayer }
+
+        ws.onopen = () => ws.send(
+            JSON.stringify(__message)
+        )
+
+        ws.onmessage = ({data}) => {
+            let _message = JSON.parse(data.toString())
+            console.log(_message)
+
+            if(data.type === 'connectPlayerInGame'){
+                playerDataRef.current = _message.data.playerData
+                gameRef.current = _message.data.game
+                handleCreateRoom()
+                return
+            }
+
+            if(data.type === 'markafield'){
+                gameRef.current = _message.data.game
+                return
+            }
+            
+            console.log(`Received: ${data}`)
+        }
+        
+        disableForm()
     }
 
     useEffect(() => {
@@ -38,7 +83,7 @@ export default function CreateRoom({formIsActive, handleCloseButton}){
     }, [formIsActive, showBlur, hideBlur])
 
     return(
-        <form className={`form-modal ${formIsActive ? "active" : ""}`}>
+        <form ref={formRef} className={`form-modal ${formIsActive ? "active" : ""}`}>
             <button type="button" className="btn-close" onClick={handleCloseButton} onKeyDown={handleCloseButton}>
                 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" fill="currentColor"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
             </button>
@@ -48,35 +93,35 @@ export default function CreateRoom({formIsActive, handleCloseButton}){
             <div className="content">
                 <div className="input-box">
                     <label>Nome</label>
-                    <input type="text" placeholder='Dê um nome para a sala.'/>
+                    <input name="roomName" type="text" placeholder='Dê um nome para a sala.'/>
                 </div>
                 <div className="input-box">
                     <label>Sua sala será pública?</label>
-                    <Toggle target={config.room.isPublic} onChange={onChangePrivacity}/>
+                    <Toggle target={isPublic} onChange={() => {setIsPublic(!isPublic)}} name="isPublic"/>
                 </div>
-                {config.room.isPublic === false? (
+                {isPublic === false? (
                     <div className={`input-box`}>
                         <label>Senha para a sala</label>
-                        <input type="text" placeholder="Digite uma senha"/>
+                        <input name="password" type="text" placeholder="Digite uma senha"/>
                     </div>
                 ) : <></>}
                 <div className="input-box">
                     <label>Terá tempo limite por jogadas?</label>
-                    <Toggle target={hasTimeLimit} onChange={() => {setHasTimeLimit(!hasTimeLimit)}}/>
+                    <Toggle target={hasTimeLimit} onChange={() => {setHasTimeLimit(!hasTimeLimit)}} name="hasTimeLimit"/>
                 </div>
                 {hasTimeLimit ? (
-                    <div className={`input-box ${config.timeLimitByPlayer !== null ? 'active' : ''}`}>
+                    <div className="input-box">
                         <label>Tempo limite</label>
-                        <input type="text" placeholder="Digite o tempo (em segundos)"/>
+                        <input name="timeLimit" type="text" placeholder="Digite o tempo (em segundos)"/>
                     </div>
                 ) : <></>}
                 <hr/>
                 <div className="input-box">
                     <label>Seu nome</label>
-                    <input type="text" placeholder="Como quer ser conhecido?"/>
+                    <input name="aliasPlayer" type="text" placeholder="Como quer ser conhecido?"/>
                 </div>
                 <div className="input-box">
-                    <button type='button' className="btn mt-[5px]">CRIAR SALA</button>
+                    <button type='button' className="btn mt-[5px]" onClick={handleClick}>CRIAR SALA</button>
                 </div>
             </div>
         </form>

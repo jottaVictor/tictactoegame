@@ -17,7 +17,7 @@ import { useTheme } from '@/providers/theme'
 export default function Page(){
     
     const {theme} = useTheme()
-    const {mode, setMode, board, setBoard, timeLimitByPlayer, setTimeLimitByPlayer, firstToPlay, setFirstToPlay, handleClick, gameRef} = useGame()
+    const {board, config, setConfig, handleClick, gameRef} = useGame()
     
     const [isMobile, setIsMobile] = useState(false)
     const [hasError, setHasError] = useState(false)
@@ -25,26 +25,40 @@ export default function Page(){
     const validateData = () => {
         const queryParams = new URLSearchParams(window.location.search)
 
+        const __config = {...config}
+
         let __mode
         let __timeLimitByPlayer
         let __firstToPlay
 
-        if(__mode = queryParams.get('m')){
-            if(__mode in handleWithConnection) setMode(__mode)
-            else setHasError(true)
+        if(__mode = queryParams.get('pxp')){
+            __config.game = {...__config.game ?? {}}
+            __config.game.mode = "playerxplayer"
         }
 
         if( __timeLimitByPlayer = queryParams.get('tlbp')){
             __timeLimitByPlayer = parseInt( __timeLimitByPlayer, 10)
 
-            if (!isNaN(__timeLimitByPlayer) && Number.isInteger(__timeLimitByPlayer)) setTimeLimitByPlayer(__timeLimitByPlayer)
-            else setHasError(true)
+            if (isNaN(__timeLimitByPlayer) && !Number.isInteger(__timeLimitByPlayer)){
+                setHasError(true)
+                return
+            }
+
+            __config.game = {...__config.game ?? {}}
+            __config.game.timeLimitByPlayer = __timeLimitByPlayer
         }
 
         if(__firstToPlay = queryParams.get('ftp')){
-            if(__firstToPlay === "self" || __firstToPlay === "opponent") setFirstToPlay(__firstToPlay === "self" ? 0 : 1)
-            else setHasError(true)
+            if(__firstToPlay !== "self" || __firstToPlay !== "opponent"){
+                setHasError(true)
+                return
+            }
+
+            __config.game = {...__config.game ?? {}}
+            __config.game.firstToPlay = __firstToPlay === "self" ? 0 : 1
         }
+
+        setConfig(__config)
     }
     
     useEffect(() => {
@@ -61,55 +75,24 @@ export default function Page(){
         return () => window.removeEventListener('resize', handleResize)
     }, [])
 
-    const playerDataRef = useRef({})
-    let ws
-
     const handleWithConnection = {
         playerxplayer: () => {
-            gameRef.current = new Game(timeLimitByPlayer, firstToPlay)
+            gameRef.current = new Game(config.timeLimitByPlayer, config.firstToPlay)
 
-            gameRef.current.joinInGame(null, 'Jogador 1')
-            gameRef.current.joinInGame(null, 'Jogador 2')
+            gameRef.current.joinInGame(0, 'Jodador 1')
+            gameRef.current.joinInGame(1, 'Jogador 2')
 
-            gameRef.current.startGame()
+            // gameRef.current.startGame()
         },
 
         playerxsocket: () => {
-            ws = new WebSocket('ws://localhost:5000/game')
-
-            ws.onopen = () => ws.send(
-                JSON.stringify({
-                    type: 'connectPlayerInGame',
-                    data: { 
-                        aliasPlayer: 'Player'
-                    }
-                })
-            )
-
-            ws.onmessage = ({data}) => {
-                let _message = JSON.parse(data.toString())
-                console.log(_message)
-
-                if(data.type === 'connectPlayerInGame'){
-                    playerDataRef.current = _message.data.playerData
-                    gameRef.current = _message.data.game
-                    return
-                }
-
-                if(data.type === 'markafield'){
-                    gameRef.current = _message.data.game
-                    return
-                }
-
-                console.log(`Received: ${data}`)
-            }
         }
     }
     
     useEffect(() => {
-        log(`The gamemode was seted to ${mode}`)
-        handleWithConnection[mode]()
-    }, [mode, timeLimitByPlayer, firstToPlay])
+        log(`The gamemode was seted to ${config.mode}`)
+        handleWithConnection[config.mode]()
+    }, [config])
 
     if(hasError)
         return (
