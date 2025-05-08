@@ -220,7 +220,7 @@ export default class Game{
     startGame(): GenericReturn{
         const returnObj = createGenericReturn()
 
-        if(this.started){
+        if(this.started && !this.finish){
             returnObj.message = "O jogo ainda está acontecendo."
             
             return returnObj
@@ -252,6 +252,7 @@ export default class Game{
 
         this.started = true
         this.finish = false
+        this.winnerID = null
         this.board = Array.from({ length: 3 }, () => Array(3).fill(null))
         returnGetterPlayer.data.isMyTime = true
 
@@ -336,6 +337,7 @@ export default class Game{
 
         const resultEndGame = this.checkEndGame()
 
+        
         if(resultEndGame.code === 0){
             this.finish = true
             this.winnerID = resultEndGame.data
@@ -430,7 +432,7 @@ export default class Game{
         }
 
         if(!hasFieldsToPlay){
-            returnObj.message = "O jogo deu velha! Não há mais campos para preencher"
+            returnObj.message = "O jogo deu velha! Não há mais campos para preencher."
             returnObj.code = 1
             returnObj.success = true
 

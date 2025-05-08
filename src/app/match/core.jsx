@@ -17,7 +17,8 @@ import { useTheme } from '@/providers/theme'
 export default function Page(){
     
     const {theme} = useTheme()
-    const {board, config, setConfig, handleClick, gameRef} = useGame()
+    const { openConfirmModal } = useControllerModal()
+    const {board, config, setConfig, playerDataRef, wsRef, gameRef, handleClick} = useGame()
     
     const [isMobile, setIsMobile] = useState(false)
     const [hasError, setHasError] = useState(false)
@@ -26,17 +27,22 @@ export default function Page(){
         const queryParams = new URLSearchParams(window.location.search)
 
         const __config = {...config}
+        __config.game = {...__config.game} ?? {}
+        __config.game.mode = "playerxplayer"
+        __config.game.timeLimitByPlayer = null
+        __config.game.idPlayerFirst = 0
 
         let __mode
         let __timeLimitByPlayer
-        let __firstToPlay
+        let __idPlayerFirst
 
-        if(__mode = queryParams.get('pxp')){
-            __config.game = {...__config.game ?? {}}
-            __config.game.mode = "playerxplayer"
+        if(__mode = queryParams.get('m') && __mode === 'playerxsocket'){
+            setConfig(JSON.parse(sessionStorage.getItem('formConfig')))
+            playerDataRef.current = JSON.parse(sessionStorage.getItem('formPlayerData'))
+            return
         }
 
-        if( __timeLimitByPlayer = queryParams.get('tlbp')){
+        if(__timeLimitByPlayer = queryParams.get('tlbp')){
             __timeLimitByPlayer = parseInt( __timeLimitByPlayer, 10)
 
             if (isNaN(__timeLimitByPlayer) && !Number.isInteger(__timeLimitByPlayer)){
@@ -44,18 +50,16 @@ export default function Page(){
                 return
             }
 
-            __config.game = {...__config.game ?? {}}
             __config.game.timeLimitByPlayer = __timeLimitByPlayer
         }
 
-        if(__firstToPlay = queryParams.get('ftp')){
-            if(__firstToPlay !== "self" || __firstToPlay !== "opponent"){
+        if(__idPlayerFirst = queryParams.get('ftp')){
+            if(__idPlayerFirst !== 0 || __idPlayerFirst !== 1){
                 setHasError(true)
                 return
             }
 
-            __config.game = {...__config.game ?? {}}
-            __config.game.firstToPlay = __firstToPlay === "self" ? 0 : 1
+            __config.game.idPlayerFirst = __idPlayerFirst
         }
 
         setConfig(__config)
@@ -77,15 +81,62 @@ export default function Page(){
 
     const handleWithConnection = {
         playerxplayer: () => {
-            gameRef.current = new Game(config.timeLimitByPlayer, config.firstToPlay)
+            gameRef.current = new Game(config.game.timeLimitByPlayer, config.game.idPlayerFirst.toString())
 
-            gameRef.current.joinInGame(0, 'Jodador 1')
-            gameRef.current.joinInGame(1, 'Jogador 2')
+            gameRef.current.joinInGame('0', 'Jodador 1')
+            gameRef.current.joinInGame('1', 'Jogador 2')
 
-            // gameRef.current.startGame()
+            gameRef.current.startGame()
         },
 
         playerxsocket: () => {
+            const playerData = playerDataRef.current
+
+            const __message = {}
+            __message.type = 'connectPlayerInGame'
+            __message.data = { aliasPlayer: playerData.aliasPlayer, createRoom: !config.room.id }
+
+            let connect = false
+
+            wsRef.current = new WebSocket("ws://172.18.1.16:5000/game")
+
+            const ws = wsRef.current
+
+            ws.onopen = () => {
+                connect = true
+                ws.send(
+                    JSON.stringify(__message)
+                )
+            }
+
+            ws.onmessage = ({data}) => {
+                let _message = JSON.parse(data.toString())
+                console.log(_message)
+
+                if(data.type === 'connectPlayerInGame'){
+                    playerDataRef.current = _message.data.playerData
+                    gameRef.current = _message.data.game
+                    return
+                }
+
+                if(data.type === 'markafield'){
+                    gameRef.current = _message.data.game
+                    return
+                }
+                
+                console.log(`Received: ${data}`)
+            }
+
+            ws.onclose = () => {
+                connect = false
+            }
+
+            setTimeout(() => {
+                if(!connect){
+                    console.log("Não foi possível abrir uma conexão.")
+                    openConfirmModal("Erro de conexão", "Não foi possível achar um servidor disponível, deseja tentar novamente?", () => {window.location.reload()}, false, false)
+                }
+            }, 2500)
         }
     }
     
@@ -109,3 +160,57 @@ export default function Page(){
         </>
     )
 }
+
+// const __config = {...config, game: {firstPlayer: "self"}, room: {ownerPlayer: "self"}}
+//         __config.game.timeLimitByPlayer = form.hasTimeLimit.checked && form.timeLimit.value ? form.timeLimit.value : null
+//         __config.room.name = form.roomName.value
+//         __config.room.isPublic = form.isPublic.checked
+//         __config.room.password = form.password?.value ?? ''
+//         __config.mode = "playerxsocket"
+//         setConfig(__config)
+        
+//         if(playerDataRef.current)
+//             playerDataRef.current.aliasPlayer = form.aliasPlayer.value
+//         else
+//             playerDataRef.current = {aliasPlayer: form.aliasPlayer.value}
+
+//         wsRef.current = new WebSocket("ws://172.18.1.16:5000/game")
+
+//         const playerData = playerDataRef.current
+//         const ws = wsRef.current
+
+//         const __message = {}
+//         __message.type = 'connectPlayerInGame'
+//         __message.data = { aliasPlayer: playerData.aliasPlayer, createRoom: true }
+
+//         let connect = false
+
+//         ws.onopen = () => {
+//             connect = true
+//             ws.send(
+//                 JSON.stringify(__message)
+//             )
+//         }
+
+//         ws.onmessage = ({data}) => {
+//             let _message = JSON.parse(data.toString())
+//             console.log(_message)
+
+//             if(data.type === 'connectPlayerInGame'){
+//                 playerDataRef.current = _message.data.playerData
+//                 gameRef.current = _message.data.game
+//                 handleCreateRoom()
+//                 return
+//             }
+
+//             if(data.type === 'markafield'){
+//                 gameRef.current = _message.data.game
+//                 return
+//             }
+            
+//             console.log(`Received: ${data}`)
+//         }
+
+//         ws.onclose = () => {
+//             connect = false
+//         }

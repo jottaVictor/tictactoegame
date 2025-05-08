@@ -3,12 +3,17 @@ import React from 'react'
 import Core from './core'
 
 import { GameProvider } from "@providers/game"
+import { ControllerModalProvider } from '@providers/controller-modal'
+import ControllerModal from '@components/modal/controller-modal'
 
 export default function Page(){
 
     return (
-        <GameProvider>
-            <Core></Core>
-        </GameProvider>
+        <ControllerModalProvider>
+            <GameProvider>
+                <ControllerModal></ControllerModal>
+                <Core></Core>
+            </GameProvider>
+        </ControllerModalProvider>
     )
 }

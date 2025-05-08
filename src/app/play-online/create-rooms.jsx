@@ -5,11 +5,9 @@ import '@components/form/form-modal.css'
 import Toggle from '@components/toggle'
 
 import { useBlur } from '@providers/blur'
-import { useGame } from '@providers/game'
 
-export default function CreateRoom({formIsActive, handleCloseButton, handleCreateRoom, disableForm}){
+export default function CreateRoom({formIsActive, handleCloseButton, disableForm}){
     const {showBlur, hideBlur} = useBlur()
-    const {config, setConfig, gameRef, playerDataRef, wsRef} = useGame()
 
     const [clicked, setClicked] = useState(false)
 
@@ -29,52 +27,24 @@ export default function CreateRoom({formIsActive, handleCloseButton, handleCreat
 
         const form = formRef.current
 
-        const __config = {...config, game: {firstPlayer: "self"}, room: {ownerPlayer: "self"}}
-        __config.game.timeLimitByPlayer = form.hasTimeLimit.checked && form.timeLimit.value ? form.timeLimit.value : null
-        __config.room.name = form.roomName.value
-        __config.room.isPublic = form.isPublic.checked
-        __config.room.password = form.password?.value ?? ''
-        __config.mode = "playerxsocket"
-        setConfig(__config)
-        
-        if(playerDataRef.current)
-            playerDataRef.current.aliasPlayer = form.aliasPlayer.value
-        else
-            playerDataRef.current = {aliasPlayer: form.aliasPlayer.value}
-
-        wsRef.current = new WebSocket('ws://172.18.16.1:5000/game')
-
-        const playerData = playerDataRef.current
-        const ws = wsRef.current
-
-        const __message = {}
-        __message.type = 'connectPlayerInGame'
-        __message.data = { aliasPlayer: playerData.aliasPlayer }
-
-        ws.onopen = () => ws.send(
-            JSON.stringify(__message)
-        )
-
-        ws.onmessage = ({data}) => {
-            let _message = JSON.parse(data.toString())
-            console.log(_message)
-
-            if(data.type === 'connectPlayerInGame'){
-                playerDataRef.current = _message.data.playerData
-                gameRef.current = _message.data.game
-                handleCreateRoom()
-                return
-            }
-
-            if(data.type === 'markafield'){
-                gameRef.current = _message.data.game
-                return
-            }
-            
-            console.log(`Received: ${data}`)
+        const __config = { 
+            game: {
+                firstPlayer: "self", 
+                timeLimitByPlayer: form.hasTimeLimit.checked && form.timeLimit.value ? form.timeLimit.value : null
+            }, 
+            room: {
+                ownerPlayer: "self",
+                name: form.roomName.value,
+                isPublic: form.isPublic.checked,
+                password: form.password?.value ?? ''
+            },
+            mode: 'playerxsocket'
         }
-        
-        disableForm()
+
+        sessionStorage.setItem("formConfig", JSON.stringify(__config))
+        sessionStorage.setItem("formPlayerData", JSON.stringify({aliasPlayer: form.aliasPlayer.value}))
+
+        window.location.href = "../../match?m=playerxsocket"
     }
 
     useEffect(() => {

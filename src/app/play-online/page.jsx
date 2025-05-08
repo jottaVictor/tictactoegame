@@ -2,10 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import './page.css'
 
-import { GameProvider } from "@providers/game"
-
 import Blur from '@components/blur'
-import Core from  '@/app/match/core.jsx'
 
 import { isToHandleButton } from '@utils/utils'
 
@@ -16,7 +13,6 @@ import CreateRoom from './create-rooms'
 
 export default function Page(){
     const {theme} = useTheme()
-    const {playerDataRef} = useGame()
 
     const [rooms, setRooms] = useState({})
     const [reload, setReload] = useState(false)
@@ -24,7 +20,7 @@ export default function Page(){
     const inputRef = useRef(null)
     const erroList = useRef(false)
 
-    const [currentState, setCurrentState] = useState("init")
+    const [formIsActive, setFormIsActive] = useState(false)
 
     useEffect(() => {
         const socket = new WebSocket("ws://172.18.1.16:5000/game")
@@ -123,11 +119,11 @@ export default function Page(){
 
     const handleCloseCreateRoom = (e) => {
         if(isToHandleButton(e))
-            setCurrentState("init")
+            setFormIsActive(false)
     }
     const handleOpenCreateRoom = (e) => {
         if(isToHandleButton(e))
-            setCurrentState("form")
+            setFormIsActive(true)
     }
 
     return(
@@ -157,7 +153,7 @@ export default function Page(){
                         {roomsVisible}
                     </section>
                 </section>
-                <CreateRoom formIsActive={currentState === 'form'} handleCloseButton={handleCloseCreateRoom} handleCreateRoom={() => setCurrentState('rungame')} disableForm={() => setCurrentState('init')}/>
+                <CreateRoom formIsActive={formIsActive} handleCloseButton={handleCloseCreateRoom} disableForm={() => setFormIsActive(false)}/>
                 <button type="button" title='Ache uma sala pública' className='btn'>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M120-120v-80h80v-640h400v40h160v600h80v80H680v-600h-80v600H120Zm320-320q17 0 28.5-11.5T480-480q0-17-11.5-28.5T440-520q-17 0-28.5 11.5T400-480q0 17 11.5 28.5T440-440Z"/></svg>
                     <div className="label">
@@ -167,7 +163,6 @@ export default function Page(){
                 </button>
             </main>
             <footer></footer>
-            {currentState === 'rungame' && <Core/>}
         </>
     )
 }

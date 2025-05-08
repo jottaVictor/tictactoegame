@@ -6,7 +6,7 @@ import '@components/tictactoe/board/board.css'
 import { useGame } from '@/providers/game'
 
 export default function Board(){
-    const {board, handleClick} = useGame()
+    const {board, config, handleClick} = useGame()
 
     const mainSymbol = <Symbol0/>
     const secondarySymbol = <Symbol1/>

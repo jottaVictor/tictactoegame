@@ -2,6 +2,7 @@
 import React, { createContext, useContext, useState, useRef } from 'react'
 
 import { log } from '@utils/utils'
+import { useControllerModal } from './controller-modal'
 
 const GameContext = createContext({
     board: [[null, null, null], [null, null, null], [null, null, null]],
@@ -30,7 +31,8 @@ export const GameProvider = ({ children }) => {
     const [config, setConfig] = useState({
         game: {
             timeLimitByPlayer: null,
-            firstPlayer: "self",
+            firstPlayer: "self", //used by online match
+            idPlayerFirst: 0 //used by local match
         },
         room: {
             ownerPlayer: "self",
@@ -42,6 +44,7 @@ export const GameProvider = ({ children }) => {
     const gameRef = useRef(null)
     const playerDataRef = useRef(null)
     const wsRef = useRef(null)
+    const { openConfirmModal, openYesNoModal } = useControllerModal()
 
     const handleClick = {
         playerxplayer: (r, c) => {
@@ -63,8 +66,34 @@ export const GameProvider = ({ children }) => {
                 ])
             }
 
+            console.log("code => ", valid.code)
+
+            if(valid.code === 7 || valid.code === 1){
+                openYesNoModal(valid.code === 7 ? "Jogo finalizado! 🎉" : "Fim de jogo.", valid.message + " Bora para mais uma?", () => {
+                    console.log(gameRef.current.startGame())
+                    setBoard([
+                        [...gameRef.current.board[0]],
+                        [...gameRef.current.board[1]],
+                        [...gameRef.current.board[2]]
+                    ])
+                    console.log(gameRef)
+                }, () => {}, false, false)
+            }
+
             if(!valid.success || valid.code === 6){
-                log(valid)
+                if(valid.code === 1){
+                    openYesNoModal("Falha ao jogar", valid.message + " Deseja reiniciar a partida?", () => {
+                        console.log(gameRef.current.startGame())
+                        setBoard([
+                            [...gameRef.current.board[0]],
+                            [...gameRef.current.board[1]],
+                            [...gameRef.current.board[2]]
+                        ])
+                        console.log(gameRef)
+                    }, () => {}, false, false)
+                    return
+                }
+                openConfirmModal("Falha ao jogar", valid.message, () => {}, false, false)
             }
         },
 
