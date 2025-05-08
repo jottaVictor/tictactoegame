@@ -100,7 +100,7 @@ export default class Game{
             code: 0,
             success: false
         }
-
+        
         if(this.players[0]?.id === idPlayer){
             returnObj.data = 0
             returnObj.code = 0
@@ -124,7 +124,7 @@ export default class Game{
         return returnObj
     }
 
-    getIndexOpposingPlayerById(idPlayer: string): GenericReturn{
+    getIndexOpponentPlayerById(idPlayer: string): GenericReturn{
         let returnObj: GenericReturn = {
             message: '',
             data: null,
@@ -187,8 +187,8 @@ export default class Game{
 
     getIdOpponentById(idPlayer: string): GenericReturn{
         const returnObj = createGenericReturn()
-        
-        if(this.isInGame(idPlayer)){
+
+        if(!this.isInGame(idPlayer)){
             returnObj.message = "O jogador não está no jogo"
             return returnObj
         }
@@ -210,6 +210,21 @@ export default class Game{
         returnObj.code = 3
         returnObj.success = true
 
+        return returnObj
+    }
+
+    getOpponentPlayerById(idPlayer: string): GenericReturn{
+        const returnObj = createGenericReturn()
+
+        const valid = this.getIdOpponentById(idPlayer)
+        
+        if(!valid.success){
+            return valid
+        }
+
+        returnObj.data = this.players[this.getIdOpponentById(idPlayer).data]
+        returnObj.code = 1
+        returnObj.success = true
         return returnObj
     }
 
@@ -255,6 +270,11 @@ export default class Game{
         this.winnerID = null
         this.board = Array.from({ length: 3 }, () => Array(3).fill(null))
         returnGetterPlayer.data.isMyTime = true
+        returnGetterPlayer.data.timeLimit = this.timeLimitByPlayer
+
+        const opponentPlayer = this.getOpponentPlayerById(this.idPlayerFirst).data
+        opponentPlayer.timeLimit = this.timeLimitByPlayer
+        opponentPlayer.isMyTime = false
 
         if(this.timeLimitByPlayer)
             returnGetterPlayer.data.timeStarted = Date.now()
@@ -302,14 +322,14 @@ export default class Game{
 
         const currentPlayer = this.players[indexCurrentPlayer]!
 
-        if(!(valid = this.getIndexOpposingPlayerById(idPlayer)).success){
+        if(!(valid = this.getIndexOpponentPlayerById(idPlayer)).success){
             returnObj = {...returnObj}
             returnObj.code = 3
 
             return returnObj
         }
 
-        const opposingPlayerById = this.players[valid.data]!
+        const opponentPlayerById = this.players[valid.data]!
 
         if(!(valid = this.validateField(row, col)).success){
             returnObj = {...valid}
@@ -319,8 +339,8 @@ export default class Game{
         }
         
         if(!(valid = currentPlayer.play(Date.now())).success){
-            if(valid.code === 5){
-                this.winnerID = opposingPlayerById.id
+            if(valid.code === 3){
+                this.winnerID = opponentPlayerById.id
                 this.finish = true
             }
 
@@ -330,8 +350,8 @@ export default class Game{
             return returnObj
         }
 
-        opposingPlayerById.isMyTime = true
-        opposingPlayerById.timeStarted = Date.now()
+        opponentPlayerById.isMyTime = true
+        opponentPlayerById.timeStarted = Date.now()
 
         this.board[row][col] = indexCurrentPlayer
 

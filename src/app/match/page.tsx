@@ -1,6 +1,6 @@
 'use client'
 import React from 'react'
-import Core from './core'
+import Core from '@components/match/core'
 
 import { GameProvider } from "@providers/game"
 import { ControllerModalProvider } from '@providers/controller-modal'

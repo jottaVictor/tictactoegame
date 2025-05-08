@@ -15,6 +15,7 @@ import { log } from '@utils/utils'
 import { useTheme } from '@/providers/theme'
 
 export default function Page(){
+
     
     const {theme} = useTheme()
     const { openConfirmModal } = useControllerModal()
@@ -22,23 +23,27 @@ export default function Page(){
     
     const [isMobile, setIsMobile] = useState(false)
     const [hasError, setHasError] = useState(false)
-
+    console.log(config.aliasPlayer0)
+    
     const validateData = () => {
         const queryParams = new URLSearchParams(window.location.search)
-
+        
         const __config = {...config}
         __config.game = {...__config.game} ?? {}
         __config.game.mode = "playerxplayer"
         __config.game.timeLimitByPlayer = null
-        __config.game.idPlayerFirst = 0
-
+        __config.game.idPlayerFirst = '0'
+        __config.game.aliasPlayer0 = 'Jogador 1'
+        __config.game.aliasPlayer1 = 'Jogador 2'
+        
         let __mode
         let __timeLimitByPlayer
         let __idPlayerFirst
-
-        if(__mode = queryParams.get('m') && __mode === 'playerxsocket'){
-            setConfig(JSON.parse(sessionStorage.getItem('formConfig')))
+        
+        if((__mode = queryParams.get('m')) && __mode === 'playerxsocket'){
+            console.log('=>', JSON.parse(sessionStorage.getItem('formConfig')))
             playerDataRef.current = JSON.parse(sessionStorage.getItem('formPlayerData'))
+            setConfig(JSON.parse(sessionStorage.getItem('formConfig')))
             return
         }
 
@@ -54,12 +59,12 @@ export default function Page(){
         }
 
         if(__idPlayerFirst = queryParams.get('ftp')){
-            if(__idPlayerFirst !== 0 || __idPlayerFirst !== 1){
+            if(__idPlayerFirst !== '0' && __idPlayerFirst !== '1'){
                 setHasError(true)
                 return
             }
 
-            __config.game.idPlayerFirst = __idPlayerFirst
+            __config.game.idPlayerFirst = __idPlayerFirst.toString()
         }
 
         setConfig(__config)
@@ -83,8 +88,8 @@ export default function Page(){
         playerxplayer: () => {
             gameRef.current = new Game(config.game.timeLimitByPlayer, config.game.idPlayerFirst.toString())
 
-            gameRef.current.joinInGame('0', 'Jodador 1')
-            gameRef.current.joinInGame('1', 'Jogador 2')
+            gameRef.current.joinInGame('0', config.game.aliasPlayer0)
+            gameRef.current.joinInGame('1', config.game.aliasPlayer1)
 
             gameRef.current.startGame()
         },
@@ -141,8 +146,8 @@ export default function Page(){
     }
     
     useEffect(() => {
-        log(`The gamemode was seted to ${config.mode}`)
-        handleWithConnection[config.mode]()
+        log(`The gamemode was seted to ${config.game.mode}`)
+        handleWithConnection[config.game.mode]()
     }, [config])
 
     if(hasError)
@@ -155,7 +160,7 @@ export default function Page(){
 
     return (
         <>
-            {isMobile ? <Mobile board={board} handleClick={handleClick.playerxplayer}/> : <Desktop board={board} handleClick={handleClick.playerxplayer}/>}
+            {isMobile ? <Mobile board={board} handleClick={handleClick[config.game.mode]}/> : <Desktop board={board} handleClick={handleClick[config.game.mode]}/>}
             <ConfigMatch></ConfigMatch>
         </>
     )

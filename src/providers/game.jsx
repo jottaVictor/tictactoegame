@@ -11,14 +11,23 @@ const GameContext = createContext({
     config: {
         game: {
             timeLimitByPlayer: null,
-            firstPlayer: "self",
+            firstPlayer: "self", //used by online match
+            idPlayerFirst: '0', //used by local match,
+            aliasPlayer0: '',
+            aliasPlayer1: '',
+            mode: "playerxplayer"
         },
         room: {
             ownerPlayer: "self",
             isPublic: true,
             password: ""
         },
-        mode: "playerxplayer"
+        playerData: {
+            players: [
+                {alias: 'Jogador 1'},
+                {alias: 'Jogador 2'}
+            ]
+        }
     },
     setConfig: () => {},
     gameRef: null,
@@ -32,14 +41,22 @@ export const GameProvider = ({ children }) => {
         game: {
             timeLimitByPlayer: null,
             firstPlayer: "self", //used by online match
-            idPlayerFirst: 0 //used by local match
+            idPlayerFirst: '0', //used by local match,
+            aliasPlayer0: '',
+            aliasPlayer1: '',
+            mode: "playerxplayer"
         },
         room: {
             ownerPlayer: "self",
             isPublic: true,
             password: ""
         },
-        mode: "playerxplayer"
+        playerData: {
+            players: [
+                {alias: 'Jogador 1'},
+                {alias: 'Jogador 2'}
+            ]
+        }
     })
     const gameRef = useRef(null)
     const playerDataRef = useRef(null)
@@ -78,6 +95,7 @@ export const GameProvider = ({ children }) => {
                     ])
                     console.log(gameRef)
                 }, () => {}, false, false)
+                return
             }
 
             if(!valid.success || valid.code === 6){

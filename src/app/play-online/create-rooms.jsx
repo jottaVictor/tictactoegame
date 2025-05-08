@@ -30,7 +30,8 @@ export default function CreateRoom({formIsActive, handleCloseButton, disableForm
         const __config = { 
             game: {
                 firstPlayer: "self", 
-                timeLimitByPlayer: form.hasTimeLimit.checked && form.timeLimit.value ? form.timeLimit.value : null
+                timeLimitByPlayer: form.hasTimeLimit.checked && form.timeLimit.value ? form.timeLimit.value : null,
+                mode: 'playerxsocket'
             }, 
             room: {
                 ownerPlayer: "self",
@@ -38,7 +39,12 @@ export default function CreateRoom({formIsActive, handleCloseButton, disableForm
                 isPublic: form.isPublic.checked,
                 password: form.password?.value ?? ''
             },
-            mode: 'playerxsocket'
+            playerData: {
+                players: [
+                    {alias: 'Jogador 1'},
+                    {alias: 'Jogador 2'}
+                ]
+            }
         }
 
         sessionStorage.setItem("formConfig", JSON.stringify(__config))
