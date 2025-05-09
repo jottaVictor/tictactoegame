@@ -1,6 +1,6 @@
 'use client'
 import React from 'react'
-import ConfigGame from "@components/modal/config-game"
+import ConfigGame from "@components/modal/config-system"
 import './page.css'
 import Blur from '@components/blur'
 import { BlurProvider } from '@providers/blur'

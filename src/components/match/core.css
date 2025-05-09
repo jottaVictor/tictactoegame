@@ -43,3 +43,23 @@ main{
 .btn{
     padding: 10px;
 }
+
+.btn-play{
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    position: fixed;
+    display: flex;
+    border-radius: 50%;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.btn-play svg{
+    height: 50px;
+}
+
+.dark.btn-play{
+    background-color: #8a2be2;
+    border: 2px solid #FFF;
+}

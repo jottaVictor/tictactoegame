@@ -37,6 +37,7 @@
 .mobile .placar{
     flex-direction: column;
     padding: 0 10px 0 10px;
+    font-size: 18px;
 }
 
 .mobile .placar span{
@@ -91,4 +92,9 @@
     .mobile .box-board .symbol1 .main{
         border-width: 12px;
     }
+}
+
+footer button.config{
+    position: initial;
+    margin-top: 10px;
 }

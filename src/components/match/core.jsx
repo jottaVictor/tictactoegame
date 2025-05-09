@@ -11,19 +11,16 @@ import '@/css/index.css'
 
 import { useGame } from '@providers/game'
 import { useControllerModal } from '@providers/controller-modal'
-import { log } from '@utils/utils'
+import { isToHandleButton, log } from '@utils/utils'
 import { useTheme } from '@/providers/theme'
 
 export default function Page(){
-
-    
     const {theme} = useTheme()
     const { openConfirmModal } = useControllerModal()
-    const {board, config, setConfig, playerDataRef, wsRef, gameRef, handleClick} = useGame()
+    const {board, config, setConfig, controllerSocket, setControllerSocket, playerDataRef, wsRef, gameRef, handleClick} = useGame()
     
     const [isMobile, setIsMobile] = useState(false)
     const [hasError, setHasError] = useState(false)
-    console.log(config.aliasPlayer0)
     
     const validateData = () => {
         const queryParams = new URLSearchParams(window.location.search)
@@ -101,6 +98,9 @@ export default function Page(){
             __message.type = 'connectPlayerInGame'
             __message.data = { aliasPlayer: playerData.aliasPlayer, createRoom: !config.room.id }
 
+            if(config.room.idRoom)
+                __message.data.idRoom = config.room.idRoom
+
             let connect = false
 
             wsRef.current = new WebSocket("ws://172.18.1.16:5000/game")
@@ -150,6 +150,16 @@ export default function Page(){
         handleWithConnection[config.game.mode]()
     }, [config])
 
+    const handleStartButton = (e) => {
+        if(isToHandleButton(e)){
+            const ws = wsRef.current
+
+            ws.send(JSON.stringify({
+                type: 'startGame'
+            }))
+        }
+    }
+
     if(hasError)
         return (
             <div className={`error ${theme}`}>
@@ -161,7 +171,13 @@ export default function Page(){
     return (
         <>
             {isMobile ? <Mobile board={board} handleClick={handleClick[config.game.mode]}/> : <Desktop board={board} handleClick={handleClick[config.game.mode]}/>}
-            <ConfigMatch></ConfigMatch>
+            <footer className={theme}>
+                <ConfigMatch></ConfigMatch>
+                {config?.game?.mode === 'playerxsocket' && 
+                <button className={`btn-play`} title="Começar partida" aria-label='Começar partida, botão' onClick={handleStartButton} onKeyDown={handleStartButton}>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M320-200v-560l440 280-440 280Z"/></svg>
+                </button>}
+            </footer>
         </>
     )
 }

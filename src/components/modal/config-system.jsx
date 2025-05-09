@@ -1,6 +1,6 @@
 'use client';
 import 'src/css/index.css'
-import './config-game.css'
+import './config-system.css'
 import '@components/form/form-modal.css'
 import React, { useEffect, useState } from 'react'
 import { log } from '@utils/utils'

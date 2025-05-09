@@ -7,7 +7,6 @@ import Blur from '@components/blur'
 import { isToHandleButton } from '@utils/utils'
 
 import { useTheme } from '@providers/theme'
-import { useGame } from '@providers/game'
 
 import CreateRoom from './create-rooms'
 

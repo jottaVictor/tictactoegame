@@ -15,7 +15,8 @@ button.config{
     border-left: 0;
     border-radius: 0px 16px 16px 0px;
     padding: 8px;
-    position: fixed;
+    position: absolute;
+    left: 0;
     bottom: 40px;
 }
 

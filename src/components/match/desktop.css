@@ -89,3 +89,8 @@ nav.desktop{
     max-width: 800px;
     aspect-ratio: 1/1;
 }
+
+footer button.config{
+    position: initial;
+    margin-top: 10px;
+}

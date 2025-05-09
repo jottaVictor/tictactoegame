@@ -21,7 +21,8 @@ export default function ControllerModal(){
                         {...modal}
                         style = {
                             {
-                                top: top
+                                top: top,
+                                zIndex: '100001'
                             }
                         }
                     />
