@@ -11,62 +11,71 @@ import { useBlur } from '@providers/blur'
 
 export default function ConfigMatch(){
     const {showBlur, hideBlur} = useBlur()
-    const {config, setConfig} = useGame()
+    const {mode, configLocalGame, setConfigLocalGame, configOnlineGame, setConfigOnlineGame, wsRef} = useGame()
     const { openConfirmModal } = useControllerModal()
 
-    const [formIsActive, setFormIsActive] = useState()
+    const [formIsActive, setFormIsActive] = useState(false)
+
+    const keepFormActive = mode === 'playerxsocket' && configOnlineGame.dataToConnect?.createRoom && !configOnlineGame.dataToConnect.aliasPlayer
+    const isTryingToConnect = configOnlineGame.idRoom === undefined && wsRef.current == null
 
     useEffect(() => {
-        console.log("passa aq")
-        if(config?.game?.mode === 'playerxsocket')
+        if(mode === 'playerxsocket' && configOnlineGame.dataToConnect?.createRoom && !configOnlineGame.dataToConnect.aliasPlayer){
             setFormIsActive(true)
-    }, [config])
-
-    useEffect(() => {
-        if(formIsActive)
             showBlur()
-        else
-            hideBlur()
-    }, [formIsActive])
+        }
+    }, [configOnlineGame, mode, setFormIsActive])
 
     const formRef = useRef()
 
     const handleSave = (e) => {
+        if(!isToHandleButton(e))
+            return
+        
         const form = formRef.current
 
-        if(form.aliasPlayer.value.trim().length === 0){
+        if(isTryingToConnect && form.aliasPlayer.value.trim().length === 0){
             openConfirmModal('Erro', 'você deve preencher seu nome para prosseguir', () => {}, false, false)
             return
         }
 
-        if(config.game.mode !== 'playerxplayer' && form.aliasPlayer1.value.trim().length === 0){
+        if(mode === 'playerxplayer' && form.aliasPlayer1.value.trim().length === 0){
             openConfirmModal('Erro', 'você deve preencher o nome do seu adversário para prosseguir', () => {}, false, false)
             return
         }
 
-        if(!isToHandleButton(e))
-            return
-
         setFormIsActive(false)
 
-        const __config = {...config}
-        __config.playerData = config.playerData ?? {}
-        
-        if(__config.game.mode === 'playerxplayer'){
-            __config.game.aliasPlayer0 = form.aliasPlayer.value
-            __config.game.aliasPlayer1 = form.aliasPlayer1.value
+        if(mode === 'playerxplayer'){
+            setConfigLocalGame({
+                ...configLocalGame, 
+                aliasPlayers: [
+                    form.aliasPlayer.value,
+                    form.aliasPlayer1.value
+                ]
+            })
+        }else if(isTryingToConnect){
+            sessionStorage.setItem('dataToConnect', 
+                JSON.stringify({
+                    ...configOnlineGame.dataToConnect,
+                    aliasPlayer: form.aliasPlayer.value
+                })
+            )
+            window.location.reload()
         }else{
-            __config.playerData.aliasPlayer = form.aliasPlayer.value
+            //env msg to edit with websocket
         }
-
-        setConfig(__config)
     }
 
     const handleCloseButton = (e) => {
+        if(keepFormActive){
+            openConfirmModal("Esperando dados", "Preencha um nome para entrar na sala", ()=>{}, false, false)
+            return
+        }
+
         if(isToHandleButton(e))
             setFormIsActive(false)
     }
-
 
     return (
         <>
@@ -81,11 +90,12 @@ export default function ConfigMatch(){
                     <h1>Configurações</h1>
                 </div>
                 <div className="content">
+                    {isTryingToConnect && 
                     <div className="input-box">
                         <label>Seu nome:</label>
                         <input type="text" name="aliasPlayer" placeholder='Digite aqui seu nome'/>
-                    </div>
-                    {config?.game?.mode === "playerxplayer" && <div className="input-box">
+                    </div>}
+                    {mode === "playerxplayer" && <div className="input-box">
                         <label>Nome do seu adversário:</label>
                         <input type="text" name="aliasPlayer1" placeholder='Digite aqui seu nome'/>
                     </div>}

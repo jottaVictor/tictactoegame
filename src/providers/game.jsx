@@ -1,65 +1,43 @@
 'use client'
 import React, { createContext, useContext, useState, useRef } from 'react'
 
-import { log } from '@utils/utils'
+import { generateId, log } from '@utils/utils'
 import { useControllerModal } from './controller-modal'
 
 const GameContext = createContext({
     board: [[null, null, null], [null, null, null], [null, null, null]],
     setBoard: () => {},
     handleClick: () => {},
-    config: {
-        game: {
-            timeLimitByPlayer: null,
-            firstPlayer: "self", //used by online match
-            idPlayerFirst: '0', //used by local match,
-            aliasPlayer0: '',
-            aliasPlayer1: '',
-            mode: "playerxplayer"
-        },
-        room: {
-            ownerPlayer: "self",
-            isPublic: true,
-            password: ""
-        },
-        playerData: {
-            players: [
-                {alias: 'Jogador 1'},
-                {alias: 'Jogador 2'}
-            ]
-        }
-    },
+    mode: 'playerxplayer',
+    setMode: () => {},
+    configLocalGame: {},
+    setConfigLocalGame: () => {},
+    configOnlineGame: {},
+    setConfigOnlineGame: () => {},
     setConfig: () => {},
     gameRef: null,
-    playerDataRef: null,
     wsRef: null,
 })
 
 export const GameProvider = ({ children }) => {
     const [board, setBoard] = useState([[null, null, null], [null, null, null], [null, null, null]])
-    const [config, setConfig] = useState({
-        game: {
-            timeLimitByPlayer: null,
-            firstPlayer: "self", //used by online match
-            idPlayerFirst: '0', //used by local match,
-            aliasPlayer0: '',
-            aliasPlayer1: '',
-            mode: "playerxplayer"
-        },
-        room: {
-            ownerPlayer: "self",
-            isPublic: true,
-            password: ""
-        },
-        playerData: {
-            players: [
-                {alias: 'Jogador 1'},
-                {alias: 'Jogador 2'}
-            ]
-        }
+    const [mode, setMode] = useState('playerxplayer')
+    const [configLocalGame, setConfigLocalGame] = useState({
+        idPlayerFirst: 0,
+        aliasPlayers: [
+            'Jogador 1',
+            'Jogador 2'
+        ],
+        timeLimitByPlayer: null
+    })
+    const [configOnlineGame, setConfigOnlineGame] = useState({
+        idPlayer: generateId(),
+        aliasPlayer: 'Jogador',
+        detaToCreate: null,
+        dataToEdit: null,
+        dataToConnect: null
     })
     const gameRef = useRef(null)
-    const playerDataRef = useRef(null)
     const wsRef = useRef(null)
     const { openConfirmModal, openYesNoModal } = useControllerModal()
 
@@ -94,7 +72,7 @@ export const GameProvider = ({ children }) => {
                         [...gameRef.current.board[2]]
                     ])
                     console.log(gameRef)
-                }, () => {}, false, false)
+                }, () => {}, true, false)
                 return
             }
 
@@ -131,9 +109,10 @@ export const GameProvider = ({ children }) => {
     return (
         <GameContext.Provider value={{ 
             board, setBoard,
-            config, setConfig,
+            mode, setMode,
+            configLocalGame, setConfigLocalGame,
+            configOnlineGame, setConfigOnlineGame,
             gameRef,
-            playerDataRef,
             wsRef,
             handleClick }}>
             {children}

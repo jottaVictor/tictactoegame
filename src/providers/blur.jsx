@@ -1,5 +1,5 @@
 'use client'
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useRef } from 'react';
 import { log } from '@utils/utils'
 
 const BlurContext = createContext({
@@ -10,14 +10,19 @@ const BlurContext = createContext({
 
 export const BlurProvider = ({ children }) => {
     const [isActive, setIsActive] = useState(false);
+    const countBlurActive = useRef(0)
 
     const showBlur = () => {
         setIsActive(true)
+        countBlurActive.current++
         log("The blush was showed")
     }
     const hideBlur = () => {
-        setIsActive(false)
-        log("The blush was hidden")
+        if(countBlurActive.current === 1)
+            setIsActive(false)
+        
+        countBlurActive.current--
+        log("The count of blur active was change", countBlurActive.current)
     }
 
     return (

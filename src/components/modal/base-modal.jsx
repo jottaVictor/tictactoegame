@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useState, useCallback, useRef } from 'react'
 import { log } from '@utils/utils'
 import { useBlur } from '@providers/blur'
 import { useControllerModal } from '@providers/controller-modal'
@@ -26,11 +26,13 @@ export default function BaseModal(
     const { closeModalById }            = useControllerModal()
     const [ isActive, setIsActive ]     = useState(true)
     const [ isExpanded, setIsExpanded ] = useState(defaultExpanded)
+    const initRef = useRef(false)
 
     const closeModal = useCallback(() => {
         setIsActive(false)
+        if(isExpanded) hideBlur()
         log("The base Modal was hidden")
-    })
+    }, [isExpanded, hideBlur, setIsActive])
 
     const expandModal = useCallback(() => {
         setIsExpanded(true)
@@ -44,10 +46,14 @@ export default function BaseModal(
         if(alwaysExpanded)
             return
 
-        if(isExpanded)
+        if(isExpanded){
             minimizeModal()
-        else
+            hideBlur()
+        }
+        else{
+            showBlur()
             expandModal()
+        }
     }
 
     const copyDescription = useCallback(() => {
@@ -81,22 +87,20 @@ export default function BaseModal(
                 return expandModal()
             }
             if(!isActive){
-                hideBlur()
                 setTimeout(() => {
                     closeModalById(props.id)
                 }, 1000);
             }
         }
-    , [isActive, expandModal, hideBlur])
+    , [isActive, expandModal])
 
-    useEffect(
-        () => {
-            if(isExpanded)
-                showBlur()
-            else
-                hideBlur()
+    useEffect(() => {
+        if (!initRef.current && defaultExpanded) {
+            console.log("ola")
+            showBlur()
+            initRef.current = true
         }
-    , [isExpanded])
+    }, [])
 
     // useEffect(
     //     () => {

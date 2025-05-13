@@ -6,49 +6,40 @@ import Toggle from '@components/toggle'
 
 import { useBlur } from '@providers/blur'
 
+import { generateId } from '@utils/utils'
+
 export default function CreateRoom({formIsActive, handleCloseButton, disableForm}){
     const {showBlur, hideBlur} = useBlur()
 
-    const [clicked, setClicked] = useState(false)
-
     const formRef = useRef(null)
 
-    const [isPublic, setIsPublic] = useState()
+    const [isPublic, setIsPublic] = useState(true)
 
     const [hasTimeLimit, setHasTimeLimit] = useState(false)
 
     const handleClick = () => {
-        if(clicked){
-            disableForm()
-            return
-        }
-
-        setClicked(true)
-
         const form = formRef.current
 
-        const __config = { 
+        const dataToConnect = {
+            idPlayer: generateId(),
+            createRoom: true,
+        }
+
+        const dataToEdit = {
             game: {
-                firstPlayer: "self", 
+                firstPlayer: "self",
                 timeLimitByPlayer: form.hasTimeLimit.checked && form.timeLimit.value ? form.timeLimit.value : null,
-                mode: 'playerxsocket'
-            }, 
+            },
             room: {
+                nameRoom: form.roomName.value,
                 ownerPlayer: "self",
-                name: form.roomName.value,
                 isPublic: form.isPublic.checked,
                 password: form.password?.value ?? ''
-            },
-            playerData: {
-                players: [
-                    {alias: 'Jogador 1'},
-                    {alias: 'Jogador 2'}
-                ]
             }
         }
 
-        sessionStorage.setItem("formConfig", JSON.stringify(__config))
-        sessionStorage.setItem("formPlayerData", JSON.stringify({aliasPlayer: form.aliasPlayer.value}))
+        sessionStorage.setItem("dataToConnect", JSON.stringify(dataToConnect))
+        sessionStorage.setItem("dataToEdit", JSON.stringify(dataToEdit))
 
         window.location.href = "../../match?m=playerxsocket"
     }
@@ -92,10 +83,6 @@ export default function CreateRoom({formIsActive, handleCloseButton, disableForm
                     </div>
                 ) : <></>}
                 <hr/>
-                <div className="input-box">
-                    <label>Seu nome</label>
-                    <input name="aliasPlayer" type="text" placeholder="Como quer ser conhecido?"/>
-                </div>
                 <div className="input-box">
                     <button type='button' className="btn mt-[5px]" onClick={handleClick}>CRIAR SALA</button>
                 </div>

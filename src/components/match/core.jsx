@@ -16,59 +16,36 @@ import { useTheme } from '@/providers/theme'
 
 export default function Page(){
     const {theme} = useTheme()
-    const { openConfirmModal } = useControllerModal()
-    const {board, config, setConfig, controllerSocket, setControllerSocket, playerDataRef, wsRef, gameRef, handleClick} = useGame()
+    const { openYesNoModal, openConfirmModal } = useControllerModal()
+    const {board, mode, setMode, configLocalGame, setConfigLocalGame, configOnlineGame, setConfigOnlineGame, wsRef, gameRef, handleClick} = useGame()
     
     const [isMobile, setIsMobile] = useState(false)
     const [hasError, setHasError] = useState(false)
     
-    const validateData = () => {
+    const handleWithFirstRefreash = () => {
         const queryParams = new URLSearchParams(window.location.search)
         
-        const __config = {...config}
-        __config.game = {...__config.game} ?? {}
-        __config.game.mode = "playerxplayer"
-        __config.game.timeLimitByPlayer = null
-        __config.game.idPlayerFirst = '0'
-        __config.game.aliasPlayer0 = 'Jogador 1'
-        __config.game.aliasPlayer1 = 'Jogador 2'
-        
-        let __mode
-        let __timeLimitByPlayer
-        let __idPlayerFirst
-        
-        if((__mode = queryParams.get('m')) && __mode === 'playerxsocket'){
-            console.log('=>', JSON.parse(sessionStorage.getItem('formConfig')))
-            playerDataRef.current = JSON.parse(sessionStorage.getItem('formPlayerData'))
-            setConfig(JSON.parse(sessionStorage.getItem('formConfig')))
-            return
+        let __mode, dataToConnect, dataToEdit
+        if(
+            (__mode = queryParams.get('m')) === 'playerxsocket'
+            && (dataToConnect = JSON.parse(sessionStorage.getItem('dataToConnect'))) !== null
+        ){
+            dataToEdit = JSON.parse(sessionStorage.getItem('dataToEdit'))
+            setMode('playerxsocket')
+            if(dataToEdit)
+                setConfigOnlineGame({
+                    dataToConnect: dataToConnect,
+                    dataToEdit: dataToEdit
+                })
+            else
+                setConfigOnlineGame({
+                    dataToConnect: dataToConnect
+                })
         }
-
-        if(__timeLimitByPlayer = queryParams.get('tlbp')){
-            __timeLimitByPlayer = parseInt( __timeLimitByPlayer, 10)
-
-            if (isNaN(__timeLimitByPlayer) && !Number.isInteger(__timeLimitByPlayer)){
-                setHasError(true)
-                return
-            }
-
-            __config.game.timeLimitByPlayer = __timeLimitByPlayer
-        }
-
-        if(__idPlayerFirst = queryParams.get('ftp')){
-            if(__idPlayerFirst !== '0' && __idPlayerFirst !== '1'){
-                setHasError(true)
-                return
-            }
-
-            __config.game.idPlayerFirst = __idPlayerFirst.toString()
-        }
-
-        setConfig(__config)
     }
     
     useEffect(() => {
-        validateData()
+        handleWithFirstRefreash()
 
         const handleResize = () => {
             setIsMobile(window.innerWidth <= 750)
@@ -81,46 +58,59 @@ export default function Page(){
         return () => window.removeEventListener('resize', handleResize)
     }, [])
 
+
     const handleWithConnection = {
         playerxplayer: () => {
-            gameRef.current = new Game(config.game.timeLimitByPlayer, config.game.idPlayerFirst.toString())
+            gameRef.current = new Game(configLocalGame.timeLimitByPlayer, configLocalGame.idPlayerFirst.toString())
 
-            gameRef.current.joinInGame('0', config.game.aliasPlayer0)
-            gameRef.current.joinInGame('1', config.game.aliasPlayer1)
+            gameRef.current.joinInGame('0', configLocalGame.aliasPlayers[0])
+            gameRef.current.joinInGame('1', configLocalGame.aliasPlayers[1])
 
             gameRef.current.startGame()
         },
 
         playerxsocket: () => {
-            const playerData = playerDataRef.current
+            if(!configOnlineGame.dataToConnect?.aliasPlayer || configOnlineGame.dataToConnect?.aliasPlayer.length <= 0){
+                openConfirmModal("Esperando dados", "Preencha um nome para entrar na sala", ()=>{}, false, false)
+                return
+            }
 
+            let __config = {...configOnlineGame}
+
+            
             const __message = {}
             __message.type = 'connectPlayerInGame'
-            __message.data = { aliasPlayer: playerData.aliasPlayer, createRoom: !config.room.id }
-
-            if(config.room.idRoom)
-                __message.data.idRoom = config.room.idRoom
-
+            __message.data = configOnlineGame.dataToConnect
+            
             let connect = false
-
+            
             wsRef.current = new WebSocket("ws://172.18.1.16:5000/game")
-
+            
             const ws = wsRef.current
-
+            
             ws.onopen = () => {
                 connect = true
                 ws.send(
                     JSON.stringify(__message)
                 )
             }
-
+            
             ws.onmessage = ({data}) => {
                 let _message = JSON.parse(data.toString())
-                console.log(_message)
-
-                if(data.type === 'connectPlayerInGame'){
-                    playerDataRef.current = _message.data.playerData
-                    gameRef.current = _message.data.game
+                console.log(_message, data.type === 'connectPlayerInGame' && (typeof configOnlineGame.dataToEdit) === 'object', configOnlineGame.dataToEdit)
+                
+                if(_message.type === 'connectPlayerInGame' && configOnlineGame.dataToConnect.createRoom){
+                    ws.send(JSON.stringify({type: 'editRoomConfig', data: configOnlineGame.dataToEdit}))
+                    setConfigOnlineGame((prev) => ({
+                        ...prev,
+                        dataToConnect: {
+                            ...configOnlineGame.dataToConnect,
+                            playerData: __message.data.playerData,
+                            createRoom: false,
+                        },
+                       players: _message.data.game.players,
+                       dataToEdit: null
+                    }))
                     return
                 }
 
@@ -131,24 +121,30 @@ export default function Page(){
                 
                 console.log(`Received: ${data}`)
             }
-
+            
             ws.onclose = () => {
                 connect = false
             }
 
+            setConfigOnlineGame({
+                __config,
+                dataToConnect: null
+            })
+            
             setTimeout(() => {
                 if(!connect){
                     console.log("Não foi possível abrir uma conexão.")
-                    openConfirmModal("Erro de conexão", "Não foi possível achar um servidor disponível, deseja tentar novamente?", () => {window.location.reload()}, false, false)
+                    openYesNoModal("Erro de conexão", "Não foi possível achar um servidor disponível, deseja tentar novamente?", () => {window.location.reload()}, {}, false, false)
                 }
             }, 2500)
         }
     }
     
     useEffect(() => {
-        log(`The gamemode was seted to ${config.game.mode}`)
-        handleWithConnection[config.game.mode]()
-    }, [config])
+        console.log("mudou", mode)
+        log(`The gamemode was seted to ${mode}`)
+        handleWithConnection[mode]()
+    }, [mode])
 
     const handleStartButton = (e) => {
         if(isToHandleButton(e)){
@@ -170,10 +166,10 @@ export default function Page(){
 
     return (
         <>
-            {isMobile ? <Mobile board={board} handleClick={handleClick[config.game.mode]}/> : <Desktop board={board} handleClick={handleClick[config.game.mode]}/>}
+            {isMobile ? <Mobile board={board} handleClick={handleClick[mode]}/> : <Desktop board={board} handleClick={handleClick[mode]}/>}
             <footer className={theme}>
                 <ConfigMatch></ConfigMatch>
-                {config?.game?.mode === 'playerxsocket' && 
+                {mode === 'playerxsocket' && 
                 <button className={`btn-play`} title="Começar partida" aria-label='Começar partida, botão' onClick={handleStartButton} onKeyDown={handleStartButton}>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M320-200v-560l440 280-440 280Z"/></svg>
                 </button>}

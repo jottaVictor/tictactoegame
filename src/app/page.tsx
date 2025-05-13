@@ -17,7 +17,7 @@ export default function Page(){
             </nav>
             <main className={theme}>
                 <section>
-                    <a className="btn btn-play 1v1local" title='Jogar 1v1 local'>
+                    <a href='./match' className="btn btn-play 1v1local" title='Jogar 1v1 local'>
                         <h1>JOGAR</h1>
                         <div className="details">
                             <div className="icons">

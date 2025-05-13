@@ -6,7 +6,7 @@ import '@components/tictactoe/board/board.css'
 import { useGame } from '@/providers/game'
 
 export default function Board(){
-    const {board, config, handleClick} = useGame()
+    const {board, mode, configOnlineGame, handleClick} = useGame()
 
     const mainSymbol = <Symbol0/>
     const secondarySymbol = <Symbol1/>
@@ -15,7 +15,7 @@ export default function Board(){
         const elements = []
         
         for(let i = 0; i < 3; i++){
-            elements.push(<div className='board-cell' onClick={() => handleClick[config.game.mode](row, i)} key={row * 3 + i}>{board[row][i] !== null ? (board[row][i] === 0 ? mainSymbol : secondarySymbol) : null}</div>)
+            elements.push(<div className='board-cell' onClick={() => {if(configOnlineGame.dataToConnect === null) handleClick[mode](row, i)}} key={row * 3 + i}>{board[row][i] !== null ? (board[row][i] === 0 ? mainSymbol : secondarySymbol) : null}</div>)
             if(i != 2)
                 elements.push(<div className="border-coll" key={'border-' + row * 3 + i}></div>)
         }
