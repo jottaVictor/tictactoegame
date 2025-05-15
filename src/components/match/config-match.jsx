@@ -10,21 +10,25 @@ import { useControllerModal } from '@/providers/controller-modal'
 import { useBlur } from '@providers/blur'
 
 export default function ConfigMatch(){
+    // const initRef = useRef(false)
     const {showBlur, hideBlur} = useBlur()
     const {mode, configLocalGame, setConfigLocalGame, configOnlineGame, setConfigOnlineGame, wsRef} = useGame()
     const { openConfirmModal } = useControllerModal()
 
     const [formIsActive, setFormIsActive] = useState(false)
 
-    const keepFormActive = mode === 'playerxsocket' && configOnlineGame.dataToConnect?.createRoom && !configOnlineGame.dataToConnect.aliasPlayer
-    const isTryingToConnect = configOnlineGame.idRoom === undefined && wsRef.current == null
+    const isTryingToConnect = mode === 'playerxsocket' && wsRef.current == null
+    const keepFormActive = isTryingToConnect && !configOnlineGame.dataToConnect.aliasPlayer
 
     useEffect(() => {
-        if(mode === 'playerxsocket' && configOnlineGame.dataToConnect?.createRoom && !configOnlineGame.dataToConnect.aliasPlayer){
+        if(keepFormActive){
             setFormIsActive(true)
             showBlur()
+        }else{
+            setFormIsActive(false)
+            hideBlur(true)
         }
-    }, [configOnlineGame, mode, setFormIsActive])
+    }, [mode, configOnlineGame])
 
     const formRef = useRef()
 
@@ -45,6 +49,7 @@ export default function ConfigMatch(){
         }
 
         setFormIsActive(false)
+        hideBlur()
 
         if(mode === 'playerxplayer'){
             setConfigLocalGame({
@@ -73,8 +78,10 @@ export default function ConfigMatch(){
             return
         }
 
-        if(isToHandleButton(e))
+        if(isToHandleButton(e)){
             setFormIsActive(false)
+            hideBlur()
+        }
     }
 
     return (
@@ -90,7 +97,7 @@ export default function ConfigMatch(){
                     <h1>Configurações</h1>
                 </div>
                 <div className="content">
-                    {isTryingToConnect && 
+                    {(isTryingToConnect || mode === 'playerxplayer') && 
                     <div className="input-box">
                         <label>Seu nome:</label>
                         <input type="text" name="aliasPlayer" placeholder='Digite aqui seu nome'/>

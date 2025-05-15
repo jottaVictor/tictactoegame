@@ -14,6 +14,8 @@ export default function Mobile(){
     const {theme} = useTheme()
     const { mode, configLocalGame, configOnlineGame } = useGame()
 
+    console.log("rendelizando compoinente mobile", configOnlineGame)
+
     return (
         <>
             <main className={`${theme} mobile`}>

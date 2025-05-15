@@ -17,10 +17,12 @@ import { useTheme } from '@/providers/theme'
 export default function Page(){
     const {theme} = useTheme()
     const { openYesNoModal, openConfirmModal } = useControllerModal()
-    const {board, mode, setMode, configLocalGame, setConfigLocalGame, configOnlineGame, setConfigOnlineGame, wsRef, gameRef, handleClick} = useGame()
+    const {board, setBoard, mode, setMode, configLocalGame, setConfigLocalGame, configOnlineGame, setConfigOnlineGame, wsRef, gameRef, handleClick} = useGame()
     
     const [isMobile, setIsMobile] = useState(false)
     const [hasError, setHasError] = useState(false)
+
+    const playing = configLocalGame.gameInProgress || configOnlineGame.gameInProgress
     
     const handleWithFirstRefreash = () => {
         const queryParams = new URLSearchParams(window.location.search)
@@ -32,15 +34,14 @@ export default function Page(){
         ){
             dataToEdit = JSON.parse(sessionStorage.getItem('dataToEdit'))
             setMode('playerxsocket')
-            if(dataToEdit)
-                setConfigOnlineGame({
-                    dataToConnect: dataToConnect,
-                    dataToEdit: dataToEdit
+            setConfigOnlineGame((prev) => {
+                console.log("lat: ", prev)    
+                return ({
+                ...prev,
+                dataToConnect: dataToConnect,
+                dataToEdit: dataToEdit
                 })
-            else
-                setConfigOnlineGame({
-                    dataToConnect: dataToConnect
-                })
+            })
         }
     }
     
@@ -65,7 +66,13 @@ export default function Page(){
 
             gameRef.current.joinInGame('0', configLocalGame.aliasPlayers[0])
             gameRef.current.joinInGame('1', configLocalGame.aliasPlayers[1])
-
+            
+            setConfigLocalGame((prev) => {
+                return ({
+                    ...prev,
+                    gameInProgress: true
+                })
+            })
             gameRef.current.startGame()
         },
 
@@ -74,9 +81,6 @@ export default function Page(){
                 openConfirmModal("Esperando dados", "Preencha um nome para entrar na sala", ()=>{}, false, false)
                 return
             }
-
-            let __config = {...configOnlineGame}
-
             
             const __message = {}
             __message.type = 'connectPlayerInGame'
@@ -97,39 +101,73 @@ export default function Page(){
             
             ws.onmessage = ({data}) => {
                 let _message = JSON.parse(data.toString())
-                console.log(_message, data.type === 'connectPlayerInGame' && (typeof configOnlineGame.dataToEdit) === 'object', configOnlineGame.dataToEdit)
-                
-                if(_message.type === 'connectPlayerInGame' && configOnlineGame.dataToConnect.createRoom){
-                    ws.send(JSON.stringify({type: 'editRoomConfig', data: configOnlineGame.dataToEdit}))
-                    setConfigOnlineGame((prev) => ({
+                              
+                console.log("Received:", _message.data)
+                console.log("mais dados , ", _message.type, _message.success, configOnlineGame.dataToConnect.idPlayer)
+
+                //if is the current player that have connected
+                if(_message.type === 'connectPlayerInGame' && _message.success && configOnlineGame.dataToConnect.idPlayer === _message.data.playerData.idPlayer){
+                    if(configOnlineGame.dataToConnect.createRoom && configOnlineGame.dataToEdit){
+                        ws.send(JSON.stringify({type: 'editRoomConfig', data: configOnlineGame.dataToEdit}))
+                    }
+
+                    setConfigOnlineGame((prev) => {
+                        return ({
                         ...prev,
                         dataToConnect: {
                             ...configOnlineGame.dataToConnect,
-                            playerData: __message.data.playerData,
+                            idRoom: _message.data.playerData.idRoom,
                             createRoom: false,
                         },
                        players: _message.data.game.players,
                        dataToEdit: null
-                    }))
-                    return
-                }
-
-                if(data.type === 'markafield'){
+                        })
+                    })
                     gameRef.current = _message.data.game
                     return
                 }
-                
-                console.log(`Received: ${data}`)
+
+                //if is another player connecting
+                if((_message.type === 'connectPlayerInGame' || _message.type === 'disconnectPlayerInGame') && _message.success){
+                    setConfigOnlineGame((prev) => {
+                        return ({
+                            ...prev,
+                            players: _message.data.game.players
+                        })
+                    })
+                    gameRef.current = _message.data.game
+                    return
+                }
+
+
+                if((_message.type === 'markafield' || _message.type === 'startGame') && _message.success){
+                    setBoard(_message.data)
+                    gameRef.current = _message.data.game
+
+                    if(_message.type == 'startGame'){
+                        setConfigOnlineGame((prev) => {
+                            return ({
+                                ...prev,
+                                gameInProgress: true
+                            })
+                        })
+                    }
+                    return
+                }
+
+                if(_message.type === 'markafield' && _message.code == 33){
+                    setConfigOnlineGame((prev) => {
+                        return ({
+                            ...prev,
+                            gameInProgress: true
+                        })
+                    })
+                }
             }
             
             ws.onclose = () => {
                 connect = false
             }
-
-            setConfigOnlineGame({
-                __config,
-                dataToConnect: null
-            })
             
             setTimeout(() => {
                 if(!connect){
@@ -141,7 +179,6 @@ export default function Page(){
     }
     
     useEffect(() => {
-        console.log("mudou", mode)
         log(`The gamemode was seted to ${mode}`)
         handleWithConnection[mode]()
     }, [mode])
@@ -150,9 +187,10 @@ export default function Page(){
         if(isToHandleButton(e)){
             const ws = wsRef.current
 
-            ws.send(JSON.stringify({
-                type: 'startGame'
-            }))
+            if(wsRef.current)
+                ws.send(JSON.stringify({
+                    type: 'startGame'
+                }))
         }
     }
 
@@ -169,7 +207,7 @@ export default function Page(){
             {isMobile ? <Mobile board={board} handleClick={handleClick[mode]}/> : <Desktop board={board} handleClick={handleClick[mode]}/>}
             <footer className={theme}>
                 <ConfigMatch></ConfigMatch>
-                {mode === 'playerxsocket' && 
+                {mode === 'playerxsocket' && !playing &&
                 <button className={`btn-play`} title="Começar partida" aria-label='Começar partida, botão' onClick={handleStartButton} onKeyDown={handleStartButton}>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M320-200v-560l440 280-440 280Z"/></svg>
                 </button>}

@@ -222,7 +222,7 @@ export default class Game{
             return valid
         }
 
-        returnObj.data = this.players[this.getIdOpponentById(idPlayer).data]
+        returnObj.data = this.getPlayerById(valid.data)
         returnObj.code = 1
         returnObj.success = true
         return returnObj

@@ -17,12 +17,13 @@ export const BlurProvider = ({ children }) => {
         countBlurActive.current++
         log("The blush was showed")
     }
-    const hideBlur = () => {
-        if(countBlurActive.current === 1)
+
+    const hideBlur = (important = false) => {
+        if(countBlurActive.current === 1 || important)
             setIsActive(false)
         
-        countBlurActive.current--
-        log("The count of blur active was change", countBlurActive.current)
+        countBlurActive.current += countBlurActive > 0 ? -1 : 0
+        log("The count of blur active was change", countBlurActive.current, important ? " with important " : "")
     }
 
     return (

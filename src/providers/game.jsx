@@ -14,7 +14,6 @@ const GameContext = createContext({
     setConfigLocalGame: () => {},
     configOnlineGame: {},
     setConfigOnlineGame: () => {},
-    setConfig: () => {},
     gameRef: null,
     wsRef: null,
 })
@@ -28,14 +27,14 @@ export const GameProvider = ({ children }) => {
             'Jogador 1',
             'Jogador 2'
         ],
-        timeLimitByPlayer: null
+        timeLimitByPlayer: null,
+        gameInProgress: false
     })
     const [configOnlineGame, setConfigOnlineGame] = useState({
-        idPlayer: generateId(),
-        aliasPlayer: 'Jogador',
         detaToCreate: null,
         dataToEdit: null,
-        dataToConnect: null
+        dataToConnect: null,
+        gameInProgress: false
     })
     const gameRef = useRef(null)
     const wsRef = useRef(null)
@@ -94,6 +93,7 @@ export const GameProvider = ({ children }) => {
         },
 
         playerxsocket: (r, c) => {
+            console.log("tentando markar")
             wsRef.current.send(
                 JSON.stringify({
                     type: "markafield",
