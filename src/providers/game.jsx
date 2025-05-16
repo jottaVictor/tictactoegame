@@ -63,14 +63,21 @@ export const GameProvider = ({ children }) => {
             console.log("code => ", valid.code)
 
             if(valid.code === 7 || valid.code === 1){
+                setConfigLocalGame((prev) => ({
+                    ...prev,
+                    gameInProgress: false
+                }))
                 openYesNoModal(valid.code === 7 ? "Jogo finalizado! 🎉" : "Fim de jogo.", valid.message + " Bora para mais uma?", () => {
-                    console.log(gameRef.current.startGame())
+                    gameRef.current.startGame()
                     setBoard([
                         [...gameRef.current.board[0]],
                         [...gameRef.current.board[1]],
                         [...gameRef.current.board[2]]
                     ])
-                    console.log(gameRef)
+                    setConfigLocalGame((prev) => ({
+                        ...prev,
+                        gameInProgress: true
+                    }))
                 }, () => {}, true, false)
                 return
             }
@@ -78,13 +85,16 @@ export const GameProvider = ({ children }) => {
             if(!valid.success || valid.code === 6){
                 if(valid.code === 1){
                     openYesNoModal("Falha ao jogar", valid.message + " Deseja reiniciar a partida?", () => {
-                        console.log(gameRef.current.startGame())
+                        gameRef.current.startGame()
                         setBoard([
                             [...gameRef.current.board[0]],
                             [...gameRef.current.board[1]],
                             [...gameRef.current.board[2]]
                         ])
-                        console.log(gameRef)
+                        setConfigLocalGame((prev) => ({
+                            ...prev,
+                            gameInProgress: true
+                        }))
                     }, () => {}, false, false)
                     return
                 }

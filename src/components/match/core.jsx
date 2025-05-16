@@ -22,7 +22,10 @@ export default function Page(){
     const [isMobile, setIsMobile] = useState(false)
     const [hasError, setHasError] = useState(false)
 
-    const playing = configLocalGame.gameInProgress || configOnlineGame.gameInProgress
+    const playing = mode === 'playerxplayer' ? configLocalGame.gameInProgress : configOnlineGame.gameInProgress
+    console.log(configOnlineGame, configLocalGame)
+
+    console.log("playing => ", playing)
     
     const handleWithFirstRefreash = () => {
         const queryParams = new URLSearchParams(window.location.search)
@@ -35,11 +38,10 @@ export default function Page(){
             dataToEdit = JSON.parse(sessionStorage.getItem('dataToEdit'))
             setMode('playerxsocket')
             setConfigOnlineGame((prev) => {
-                console.log("lat: ", prev)    
-                return ({
-                ...prev,
-                dataToConnect: dataToConnect,
-                dataToEdit: dataToEdit
+                    return ({
+                    ...prev,
+                    dataToConnect: dataToConnect,
+                    dataToEdit: dataToEdit
                 })
             })
         }
@@ -66,14 +68,6 @@ export default function Page(){
 
             gameRef.current.joinInGame('0', configLocalGame.aliasPlayers[0])
             gameRef.current.joinInGame('1', configLocalGame.aliasPlayers[1])
-            
-            setConfigLocalGame((prev) => {
-                return ({
-                    ...prev,
-                    gameInProgress: true
-                })
-            })
-            gameRef.current.startGame()
         },
 
         playerxsocket: () => {
@@ -113,14 +107,14 @@ export default function Page(){
 
                     setConfigOnlineGame((prev) => {
                         return ({
-                        ...prev,
-                        dataToConnect: {
-                            ...configOnlineGame.dataToConnect,
-                            idRoom: _message.data.playerData.idRoom,
-                            createRoom: false,
-                        },
-                       players: _message.data.game.players,
-                       dataToEdit: null
+                            ...prev,
+                            dataToConnect: {
+                                ...configOnlineGame.dataToConnect,
+                                idRoom: _message.data.playerData.idRoom,
+                                createRoom: false,
+                            },
+                            players: _message.data.game.players,
+                            dataToEdit: null
                         })
                     })
                     gameRef.current = _message.data.game
@@ -155,11 +149,11 @@ export default function Page(){
                     return
                 }
 
-                if(_message.type === 'markafield' && _message.code == 33){
+                if(_message.type === 'markafield' && _message.code == 27){
                     setConfigOnlineGame((prev) => {
                         return ({
                             ...prev,
-                            gameInProgress: true
+                            gameInProgress: false
                         })
                     })
                 }
@@ -191,6 +185,18 @@ export default function Page(){
                 ws.send(JSON.stringify({
                     type: 'startGame'
                 }))
+            else{
+                gameRef.current.startGame()
+                setBoard([
+                    [...gameRef.current.board[0]],
+                    [...gameRef.current.board[1]],
+                    [...gameRef.current.board[2]]
+                ])
+                setConfigLocalGame((prev) => ({
+                    ...prev,
+                    gameInProgress: true
+                }))
+            }
         }
     }
 
@@ -207,7 +213,7 @@ export default function Page(){
             {isMobile ? <Mobile board={board} handleClick={handleClick[mode]}/> : <Desktop board={board} handleClick={handleClick[mode]}/>}
             <footer className={theme}>
                 <ConfigMatch></ConfigMatch>
-                {mode === 'playerxsocket' && !playing &&
+                {!playing &&
                 <button className={`btn-play`} title="Começar partida" aria-label='Começar partida, botão' onClick={handleStartButton} onKeyDown={handleStartButton}>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M320-200v-560l440 280-440 280Z"/></svg>
                 </button>}

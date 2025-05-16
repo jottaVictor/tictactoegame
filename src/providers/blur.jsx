@@ -15,6 +15,7 @@ export const BlurProvider = ({ children }) => {
     const showBlur = () => {
         setIsActive(true)
         countBlurActive.current++
+        log("The count of blur active was change", countBlurActive.current)
         log("The blush was showed")
     }
 
@@ -22,7 +23,11 @@ export const BlurProvider = ({ children }) => {
         if(countBlurActive.current === 1 || important)
             setIsActive(false)
         
-        countBlurActive.current += countBlurActive > 0 ? -1 : 0
+        if(countBlurActive > 0)
+            countBlurActive.current--
+        else
+            countBlurActive.current = 0
+        
         log("The count of blur active was change", countBlurActive.current, important ? " with important " : "")
     }
 
