@@ -1,48 +1,75 @@
 'use client'
 import React, { createContext, useContext, useState, useRef } from 'react'
 
-import { generateId, log } from '@utils/utils'
+import { generateId } from '@utils/utils'
 import { useControllerModal } from './controller-modal'
 
 const GameContext = createContext({
     board: [[null, null, null], [null, null, null], [null, null, null]],
     setBoard: () => {},
-    handleClick: () => {},
     mode: 'playerxplayer',
     setMode: () => {},
-    configLocalGame: {},
-    setConfigLocalGame: () => {},
-    configOnlineGame: {},
-    setConfigOnlineGame: () => {},
+    configGame: {},
+    setConfigGame: () => {},
+    dataGame: {},
+    setDataGame: () => {},
     gameRef: null,
     wsRef: null,
+    handleClick: () => {},
 })
 
 export const GameProvider = ({ children }) => {
     const [board, setBoard] = useState([[null, null, null], [null, null, null], [null, null, null]])
     const [mode, setMode] = useState('playerxplayer')
-    const [configLocalGame, setConfigLocalGame] = useState({
-        idPlayerFirst: 0,
+    // const [configLocalGame, setConfigLocalGame] = useState({
+    //     idPlayerFirst: 0,
+    //     aliasPlayers: [
+    //         'Jogador 1',
+    //         'Jogador 2'
+    //     ],
+    //     timeLimitByPlayer: null,
+    //     gameInProgress: false
+    // })
+    // const [configOnlineGame, setConfigOnlineGame] = useState({
+    //     detaToCreate: null,
+    //     dataToEdit: null,
+    //     dataToConnect: null,
+    //     gameInProgress: false
+    // })
+    const [configGame, setConfigGame] = useState({
+        game: {
+            firstPlayer: "self", //is used by online mode
+            timeLimitByPlayer: null,
+            idPlayerFirst: '0' // is used by local game
+        },
+        room: {
+            nameRoom: 'sala online',
+            ownerPlayer: "self",
+            isPublic: true,
+            password: '',
+            createRoom: false
+        },
+        playerData: {
+            aliasPlayer: '',
+            idPlayer: ''
+        }
+    })
+    const [dataGame, setDataGame] = useState({
         aliasPlayers: [
             'Jogador 1',
             'Jogador 2'
         ],
-        timeLimitByPlayer: null,
+        idRoom: null,
         gameInProgress: false
     })
-    const [configOnlineGame, setConfigOnlineGame] = useState({
-        detaToCreate: null,
-        dataToEdit: null,
-        dataToConnect: null,
-        gameInProgress: false
-    })
+    
     const gameRef = useRef(null)
     const wsRef = useRef(null)
+    
     const { openConfirmModal, openYesNoModal } = useControllerModal()
 
     const handleClick = {
         playerxplayer: (r, c) => {
-            console.log(gameRef.current)
             if (!gameRef.current.players[0] || !gameRef.current.players[1]) {
                 console.warn("Players are not set yet!")
                 return
@@ -60,21 +87,20 @@ export const GameProvider = ({ children }) => {
                 ])
             }
 
-            console.log("code => ", valid.code)
-
             if(valid.code === 7 || valid.code === 1){
-                setConfigLocalGame((prev) => ({
+                setDataGame((prev) => ({
                     ...prev,
                     gameInProgress: false
                 }))
                 openYesNoModal(valid.code === 7 ? "Jogo finalizado! 🎉" : "Fim de jogo.", valid.message + " Bora para mais uma?", () => {
                     gameRef.current.startGame()
+                    console.log('->', gameRef.current)
                     setBoard([
                         [...gameRef.current.board[0]],
                         [...gameRef.current.board[1]],
                         [...gameRef.current.board[2]]
                     ])
-                    setConfigLocalGame((prev) => ({
+                    setDataGame((prev) => ({
                         ...prev,
                         gameInProgress: true
                     }))
@@ -84,14 +110,19 @@ export const GameProvider = ({ children }) => {
 
             if(!valid.success || valid.code === 6){
                 if(valid.code === 1){
+                    setDataGame({
+                        ...dataGame,
+                        gameInProgress: false
+                    })
                     openYesNoModal("Falha ao jogar", valid.message + " Deseja reiniciar a partida?", () => {
                         gameRef.current.startGame()
+                        console.log('->', gameRef.current)
                         setBoard([
                             [...gameRef.current.board[0]],
                             [...gameRef.current.board[1]],
                             [...gameRef.current.board[2]]
                         ])
-                        setConfigLocalGame((prev) => ({
+                        setDataGame((prev) => ({
                             ...prev,
                             gameInProgress: true
                         }))
@@ -103,7 +134,6 @@ export const GameProvider = ({ children }) => {
         },
 
         playerxsocket: (r, c) => {
-            console.log("tentando markar")
             wsRef.current.send(
                 JSON.stringify({
                     type: "markafield",
@@ -120,11 +150,11 @@ export const GameProvider = ({ children }) => {
         <GameContext.Provider value={{ 
             board, setBoard,
             mode, setMode,
-            configLocalGame, setConfigLocalGame,
-            configOnlineGame, setConfigOnlineGame,
+            configGame, setConfigGame,
+            dataGame, setDataGame,
             gameRef,
             wsRef,
-            handleClick }}>
+            handleClick}}>
             {children}
         </GameContext.Provider>
     )

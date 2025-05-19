@@ -222,7 +222,7 @@ export default class Game{
             return valid
         }
 
-        returnObj.data = this.getPlayerById(valid.data)
+        returnObj.data = this.getPlayerById(valid.data).data
         returnObj.code = 1
         returnObj.success = true
         return returnObj
@@ -258,13 +258,6 @@ export default class Game{
 
         const returnGetterPlayer = this.getPlayerById(this.idPlayerFirst)
 
-        if(returnGetterPlayer.code === 1){
-            returnObj.message = "O primeiro jogador não foi definido"
-            returnObj.code = 3
-            
-            return returnObj
-        }
-
         this.started = true
         this.finish = false
         this.winnerID = null
@@ -272,17 +265,17 @@ export default class Game{
         returnGetterPlayer.data.isMyTime = true
         returnGetterPlayer.data.timeLimit = this.timeLimitByPlayer
 
-        const opponentPlayer = this.getOpponentPlayerById(this.idPlayerFirst).data
-        opponentPlayer.timeLimit = this.timeLimitByPlayer
-        opponentPlayer.isMyTime = false
+        const opponentPlayer = this.getOpponentPlayerById(this.idPlayerFirst)
+        opponentPlayer.data.timeLimit = this.timeLimitByPlayer
+        opponentPlayer.data.isMyTime = false
 
         if(this.timeLimitByPlayer)
             returnGetterPlayer.data.timeStarted = Date.now()
 
         returnObj.message = ""
-        returnObj.code = 4
+        returnObj.code = 3
         returnObj.success = true
-
+        
         return returnObj
     }
 

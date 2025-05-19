@@ -8,10 +8,3 @@ export function log(...args: any) {
     if(process.env.NEXT_PUBLIC_LOG === "true")
         console.log(...args)
 }
-
-export function isToHandleButton(e: any){
-    if(e.type === "click" || (e.type === "keydown" && e.key === "Enter"))
-        return true
-
-    return false
-}

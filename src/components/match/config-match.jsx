@@ -5,20 +5,19 @@ import '@components/form/form-modal.css'
 import '@components/match/config-match.css'
 
 import { useGame } from '@/providers/game'
-import { isToHandleButton } from '@/utils/utils'
 import { useControllerModal } from '@/providers/controller-modal'
 import { useBlur } from '@providers/blur'
 
 export default function ConfigMatch(){
     // const initRef = useRef(false)
     const {showBlur, hideBlur} = useBlur()
-    const {mode, configLocalGame, setConfigLocalGame, configOnlineGame, setConfigOnlineGame, wsRef} = useGame()
+    const {mode, setMode, configGame, setConfigGame, dataGame, setDataGame, gameRef, wsRef} = useGame()
     const { openConfirmModal } = useControllerModal()
 
     const [formIsActive, setFormIsActive] = useState(false)
 
     const isTryingToConnect = mode === 'playerxsocket' && wsRef.current == null
-    const keepFormActive = isTryingToConnect && !configOnlineGame.dataToConnect.aliasPlayer
+    const keepFormActive = isTryingToConnect && !config.playerData.aliasPlayer
 
     useEffect(() => {
         if(keepFormActive){
@@ -28,42 +27,66 @@ export default function ConfigMatch(){
             setFormIsActive(false)
             hideBlur(true)
         }
-    }, [mode, configOnlineGame])
+    }, [mode])
 
     const formRef = useRef()
 
-    const handleSave = (e) => {
-        if(!isToHandleButton(e))
+    const handleSave = () => {
+        if(dataGame.gameInProgress){
+            openConfirmModal('Erro', 'primeiro o jogo deve encerrar', () => {}, false, false)
             return
-        
+        }
+
         const form = formRef.current
+        console.log(form.idPlayerFirst)
 
         if(isTryingToConnect && form.aliasPlayer.value.trim().length === 0){
             openConfirmModal('Erro', 'você deve preencher seu nome para prosseguir', () => {}, false, false)
             return
         }
 
-        if(mode === 'playerxplayer' && form.aliasPlayer1.value.trim().length === 0){
-            openConfirmModal('Erro', 'você deve preencher o nome do seu adversário para prosseguir', () => {}, false, false)
-            return
+        if(mode === 'playerxplayer'){
+            if(form.aliasPlayer1.value.trim().length === 0){
+                openConfirmModal('Erro', 'você deve preencher o nome do seu adversário para prosseguir', () => {}, false, false)
+                return
+            }if(form.idPlayerFirst.value !== '0' && form.idPlayerFirst.value !== '1'){
+                openConfirmModal('Erro', 'você deve selecioanr uma opção válida para \'primeiro a jogar\'', () => {}, false, false)
+                return
+            }
+            if(form.timeLimitByPlayer.value)
+                form.timeLimitByPlayer.value = parseInt(form.timeLimitByPlayer.value)
+
+            console.log("mn => ", form.timeLimitByPlayer.value)
         }
 
         setFormIsActive(false)
         hideBlur()
 
         if(mode === 'playerxplayer'){
-            setConfigLocalGame({
-                ...configLocalGame, 
+            setConfigGame({
+                ...configGame,
+                game: {
+                    ...configGame.game,
+                    timeLimitByPlayer: !form.timeLimitByPlayer.value || form.timeLimitByPlayer.value.trim().length == 0 ? null : form.timeLimitByPlayer.value,
+                    idPlayerFirst: form.idPlayerFirst.value,
+                }
+            })
+            setDataGame({
+                ...dataGame,
                 aliasPlayers: [
                     form.aliasPlayer.value,
                     form.aliasPlayer1.value
                 ]
             })
+            setMode('playerxplayer')
         }else if(isTryingToConnect){
-            sessionStorage.setItem('dataToConnect', 
+            sessionStorage.setItem('configGameOnline', 
                 JSON.stringify({
-                    ...configOnlineGame.dataToConnect,
-                    aliasPlayer: form.aliasPlayer.value
+                    ...config,
+                    dataPlayer: {
+                        ...config.dataPlayer,
+                        aliasPlayer: form.aliasPlayer.value
+                    }
                 })
             )
             window.location.reload()
@@ -72,21 +95,28 @@ export default function ConfigMatch(){
         }
     }
 
-    const handleCloseButton = (e) => {
+    const handleCloseButton = () => {
         if(keepFormActive){
             openConfirmModal("Esperando dados", "Preencha um nome para entrar na sala", ()=>{}, false, false)
             return
         }
 
-        if(isToHandleButton(e)){
-            setFormIsActive(false)
-            hideBlur()
+        setFormIsActive(false)
+        hideBlur()
+    }
+
+    const handleClickActiveForm = () => {
+        if(dataGame.gameInProgress){
+            openConfirmModal('Erro', 'primeiro o jogo deve encerrar', () => {}, false, false)
+            return
         }
+        
+        setFormIsActive(true)
     }
 
     return (
         <>
-            <button type="button" tabIndex={formIsActive ? -1 : 0} className={`config btn-expansive ${!formIsActive ? "active" : ""}`} title='Configurações' aria-hidden={formIsActive} onClick={() => {setFormIsActive(true)}}>
+            <button type="button" tabIndex={formIsActive ? -1 : 0} className={`config btn-expansive ${!formIsActive ? "active" : ""}`} title='Configurações' aria-hidden={formIsActive} onClick={handleClickActiveForm}>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="m370-80-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t22.5 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm112-260q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Z"/></svg>
             </button>
             <form ref={formRef} className={`form-modal ${formIsActive ? "active" : ""}`}>
@@ -102,10 +132,25 @@ export default function ConfigMatch(){
                         <label>Seu nome:</label>
                         <input type="text" name="aliasPlayer" placeholder='Digite aqui seu nome'/>
                     </div>}
-                    {mode === "playerxplayer" && <div className="input-box">
-                        <label>Nome do seu adversário:</label>
-                        <input type="text" name="aliasPlayer1" placeholder='Digite aqui seu nome'/>
-                    </div>}
+                    {mode === "playerxplayer" && 
+                        (<>
+                            <div className="input-box">
+                                <label>Nome do seu adversário:</label>
+                                <input type="text" name="aliasPlayer1" placeholder='Digite aqui seu nome'/>
+                            </div>
+                            <div className="input-box">
+                                <label>Tempo limite</label>
+                                <input name="timeLimitByPlayer" type="text" placeholder="Digite o tempo (em segundos)"/>
+                            </div>
+                            <div className="input-box">
+                                <label>Primeiro a jogar:</label>
+                                <select name="idPlayerFirst" selected="0">
+                                    <option value="0">Você</option>
+                                    <option value="1">Seu amigo</option>
+                                </select>
+                            </div>
+                        </>)
+                    }
                 </div>
                 <div className="input-box">
                     <button type="button" className='btn save' title="Salvar" aria-label='Salvar configuraçẽos, botão' onClick={handleSave} onKeyDown={handleSave}>

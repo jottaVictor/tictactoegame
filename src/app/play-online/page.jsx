@@ -4,7 +4,7 @@ import './page.css'
 
 import Blur from '@components/blur'
 
-import { isToHandleButton, generateId  } from '@utils/utils'
+import { generateId  } from '@utils/utils'
 
 import { useTheme } from '@providers/theme'
 
@@ -58,14 +58,12 @@ export default function Page(){
         updateRoomsVisible()
     }, [rooms])
 
-    const handleReload = (e) => {
-        if(isToHandleButton(e))
-            setReload(!reload)
+    const handleReload = () => {
+        setReload(!reload)
     }
 
-    const handleVisualReload = (e) => {
-        if(isToHandleButton(e))
-            updateRoomsVisible()
+    const handleVisualReload = () => {
+        updateRoomsVisible()
     }
 
     const noRooms = (hasSearch = false) => {
@@ -129,13 +127,11 @@ export default function Page(){
         setRoomsVisible(elements.length > 0 ? elements : noRooms(search))
     }
 
-    const handleCloseCreateRoom = (e) => {
-        if(isToHandleButton(e))
-            setFormIsActive(false)
+    const handleCloseCreateRoom = () => {
+        setFormIsActive(false)
     }
-    const handleOpenCreateRoom = (e) => {
-        if(isToHandleButton(e))
-            setFormIsActive(true)
+    const handleOpenCreateRoom = () => {
+        setFormIsActive(true)
     }
 
     return(

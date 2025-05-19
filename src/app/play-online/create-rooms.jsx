@@ -8,7 +8,7 @@ import { useBlur } from '@providers/blur'
 
 import { generateId } from '@utils/utils'
 
-export default function CreateRoom({formIsActive, handleCloseButton, disableForm}){
+export default function CreateRoom({formIsActive, handleCloseButton}){
     const {showBlur, hideBlur} = useBlur()
 
     const formRef = useRef(null)
@@ -20,12 +20,7 @@ export default function CreateRoom({formIsActive, handleCloseButton, disableForm
     const handleClick = () => {
         const form = formRef.current
 
-        const dataToConnect = {
-            idPlayer: generateId(),
-            createRoom: true,
-        }
-
-        const dataToEdit = {
+        const configGameOnline = {
             game: {
                 firstPlayer: "self",
                 timeLimitByPlayer: form.hasTimeLimit.checked && form.timeLimit.value ? form.timeLimit.value : null,
@@ -34,12 +29,15 @@ export default function CreateRoom({formIsActive, handleCloseButton, disableForm
                 nameRoom: form.roomName.value,
                 ownerPlayer: "self",
                 isPublic: form.isPublic.checked,
-                password: form.password?.value ?? ''
+                password: form.password?.value ?? '',
+                createRoom: true
+            },
+            playerData: {
+                idPlayer: generateId()
             }
         }
 
-        sessionStorage.setItem("dataToConnect", JSON.stringify(dataToConnect))
-        sessionStorage.setItem("dataToEdit", JSON.stringify(dataToEdit))
+        sessionStorage.setItem("configGameOnline", JSON.stringify(configGameOnline))
 
         window.location.href = "../../match?m=playerxsocket"
     }

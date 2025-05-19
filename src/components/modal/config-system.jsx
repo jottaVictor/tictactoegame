@@ -6,7 +6,6 @@ import React, { useEffect, useState } from 'react'
 import { log } from '@utils/utils'
 import { useTheme } from '@providers/theme'
 import { useBlur } from '@providers/blur'
-import { isToHandleButton } from "@utils/utils"
 
 export default function ConfigGame(){
     const [formIsActive, setFormIsActive] = useState(false)
@@ -18,9 +17,8 @@ export default function ConfigGame(){
         else hideBlur()
     }, [formIsActive, showBlur, hideBlur])
 
-    const handleCloseButton = (e) => {
-        if(isToHandleButton(e))
-            setFormIsActive(false)
+    const handleCloseButton = () => {
+        setFormIsActive(false)
     }
 
     const handleChangeSelect = (e) => {
