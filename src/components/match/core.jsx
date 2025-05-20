@@ -17,7 +17,7 @@ import { useTheme } from '@/providers/theme'
 export default function Page(){
     const {theme} = useTheme()
     const { openYesNoModal, openConfirmModal } = useControllerModal()
-    const {board, setBoard, mode, setMode, configGame, setConfigGame, dataGame, setDataGame, playing, wsRef, gameRef, handleClick} = useGame()
+    const {setBoard, mode, setMode, configGame, setConfigGame, dataGame, setDataGame, wsRef, gameRef, handleClick} = useGame()
     
     const [isMobile, setIsMobile] = useState(false)
     
@@ -57,7 +57,7 @@ export default function Page(){
 
     const handleWithConnection = {
         playerxplayer: () => {
-            gameRef.current = new Game(parseInt(configGame.game.timeLimitByPlayer), configGame.game.idPlayerFirst.toString())
+            gameRef.current = new Game(configGame.game.timeLimitByPlayer, configGame.game.idPlayerFirst.toString())
 
             gameRef.current.joinInGame('0', dataGame.aliasPlayers[0])
             gameRef.current.joinInGame('1', dataGame.aliasPlayers[1])
@@ -197,6 +197,7 @@ export default function Page(){
             }))
         else{
             gameRef.current.startGame()
+            console.log('10->', gameRef.current)
             setBoard([
                 [...gameRef.current.board[0]],
                 [...gameRef.current.board[1]],
@@ -222,7 +223,7 @@ export default function Page(){
             {isMobile ? <Mobile/> : <Desktop/>}
             <footer className={theme}>
                 <ConfigMatch></ConfigMatch>
-                {!playing &&
+                {!dataGame.gameInProgress &&
                 <button className={`btn-play`} title="Começar partida" aria-label='Começar partida, botão' onClick={handleStartButton} onKeyDown={handleStartButton}>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M320-200v-560l440 280-440 280Z"/></svg>
                 </button>}

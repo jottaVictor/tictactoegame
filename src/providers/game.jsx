@@ -109,6 +109,27 @@ export const GameProvider = ({ children }) => {
             }
 
             if(!valid.success || valid.code === 6){
+                if(valid.code === 6){
+                    setDataGame({
+                        ...dataGame,
+                        gameInProgress: false
+                    })
+                    openYesNoModal("Falha ao jogar", valid.message + " Deseja reiniciar a partida?", () => {
+                        gameRef.current.startGame()
+                        console.log('->', gameRef.current)
+                        setBoard([
+                            [...gameRef.current.board[0]],
+                            [...gameRef.current.board[1]],
+                            [...gameRef.current.board[2]]
+                        ])
+                        setDataGame((prev) => ({
+                            ...prev,
+                            gameInProgress: true
+                        }))
+                    }, () => {}, true, false)
+                    return
+                }
+                
                 if(valid.code === 1){
                     setDataGame({
                         ...dataGame,

@@ -53,30 +53,31 @@ export default function ConfigMatch(){
                 openConfirmModal('Erro', 'você deve selecioanr uma opção válida para \'primeiro a jogar\'', () => {}, false, false)
                 return
             }
-            if(form.timeLimitByPlayer.value)
+            if(form.timeLimitByPlayer.value){
                 form.timeLimitByPlayer.value = parseInt(form.timeLimitByPlayer.value)
-
-            console.log("mn => ", form.timeLimitByPlayer.value)
+            }
         }
 
         setFormIsActive(false)
         hideBlur()
 
         if(mode === 'playerxplayer'){
-            setConfigGame({
-                ...configGame,
-                game: {
-                    ...configGame.game,
-                    timeLimitByPlayer: !form.timeLimitByPlayer.value || form.timeLimitByPlayer.value.trim().length == 0 ? null : form.timeLimitByPlayer.value,
-                    idPlayerFirst: form.idPlayerFirst.value,
-                }
-            })
+            gameRef.current.players[0].alias = form.aliasPlayer.value
+            gameRef.current.players[1].alias = form.aliasPlayer.value
             setDataGame({
                 ...dataGame,
                 aliasPlayers: [
                     form.aliasPlayer.value,
                     form.aliasPlayer1.value
                 ]
+            })
+            setConfigGame({
+                ...configGame,
+                game: {
+                    ...configGame.game,
+                    timeLimitByPlayer: (!form.timeLimitByPlayer.value || form.timeLimitByPlayer.value.trim().length == 0 ? null : form.timeLimitByPlayer.value),
+                    idPlayerFirst: form.idPlayerFirst.value.toString(),
+                }
             })
             setMode('playerxplayer')
         }else if(isTryingToConnect){
